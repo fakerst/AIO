@@ -27,6 +27,8 @@ def uniform_samples(range_start, range_end, num_samples=3000):
 # parameter space
 stripe_size = uniform_samples(1,512)
 stripe_count = uniform_samples(1,120)
+gkfs_distributor = uniform_samples(0, 1)
+gkfs_chunksize = uniform_samples(512, 65536)
 romio_cb_read = uniform_samples(0,2)
 romio_cb_write = uniform_samples(0,2)
 romio_ds_read = uniform_samples(0,2)
@@ -180,7 +182,7 @@ def runcmd(command, fs_type, dir_, romio, count):
     if fs_type == "Lustre":
         set_lustre_stripe(dir_, count)
     elif fs_type == "GekkoFS":
-        pass
+        set_gkfs_parameter(count)
     else:
         pass
     set_romio(romio)
@@ -191,11 +193,21 @@ def runcmd(command, fs_type, dir_, romio, count):
         file.close()
         print("failed")
 
+
 def set_lustre_stripe(path, count):
     this_stripe_size = stripe_size[count] * 1024 * 1024
     this_stripe_count = stripe_count[count]
     command = "lfs setstripe -S %s -c %s %s" % (this_stripe_size, this_stripe_count, path)
     subprocess.run(command, shell=True, capture_output=True, text=True)
+
+
+def set_gkfs_parameter(count):
+    if gkfs_distributor[count] == 0:
+        os.environ["GKFS_DISTRIBUTOR"] = "hash"
+    elif gkfs_distributor[count] == 1:
+        os.environ["GKFS_DISTRIBUTOR"] = "uniform"
+
+    os.environ["chunksize"] = str(gkfs_chunksize[count]*1024)
 
 
 def set_romio(romio):
@@ -214,8 +226,10 @@ def set_romio(romio):
         f.write(str(romio[5]))
     f.close()
 
+
 def get_romio_config(count):
     return np.array([arr[count] for arr in romio])
+
 
 def main():
     parser = argparse.ArgumentParser(description='AIO Collecting Trace')
