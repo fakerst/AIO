@@ -180,12 +180,14 @@ def collect_trace(fs_type, dir_):
 
 def runcmd(command, fs_type, dir_, romio, count):
     if fs_type == "Lustre":
-        set_lustre_stripe(dir_, count)
+        pass
+        #set_lustre_stripe(dir_, count)
     elif fs_type == "GekkoFS":
-        set_gkfs_parameter(count)
+        pass
+        #set_gkfs_parameter(count)
     else:
         pass
-    set_romio(romio)
+    #set_romio(romio)
     result = subprocess.run(command, shell=True, capture_output=True, text=True)
     if result.returncode != 0:
         file = open("errorcommand.txt", "a")
