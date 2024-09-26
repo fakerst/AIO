@@ -1,0 +1,212 @@
+yhrun -p thcp3 -N 2 -n 8 ~/wx/mpiior -a mpiio -t 256k -b 1m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -e -t 256k -b 1g -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -t 1m -b 1m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -w -t 1m -b 1m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile -k
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -r -t 1m -b 1m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -t 1m -b 1m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -w -t 1m -b 1m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile -k
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -r -t 1m -b 1m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -e -z -t 1m -b 1m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -e -w -z -t 1m -b 1m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -e -z -F -t 1m -b 1m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -e -z -w -F -t 1m -b 1m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -t 1m -b 1m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -w -t 1m -b 1m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile -k
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -r -t 1m -b 1m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -t 1m -b 1m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -w -t 1m -b 1m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile -k
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -r -t 1m -b 1m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -e -z -t 1m -b 1m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -e -w -z -t 1m -b 1m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -e -z -F -t 1m -b 1m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -e -z -w -F -t 1m -b 1m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -t 4m -b 4m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -w -t 4m -b 4m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile -k
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -r -t 4m -b 4m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -t 4m -b 4m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -w -t 4m -b 4m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile -k
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -r -t 4m -b 4m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -e -z -t 4m -b 4m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -e -w -z -t 4m -b 4m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -e -z -F -t 4m -b 4m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -e -z -w -F -t 4m -b 4m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -t 16m -b 16m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -w -t 16m -b 16m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile -k
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -r -t 16m -b 16m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -t 16m -b 16m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -w -t 16m -b 16m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile -k
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -r -t 16m -b 16m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -e -z -t 16m -b 16m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -e -w -z -t 16m -b 16m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -e -z -F -t 16m -b 16m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -e -z -w -F -t 16m -b 16m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -t 64m -b 64m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -w -t 64m -b 64m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile -k
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -r -t 64m -b 64m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -t 64m -b 64m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -w -t 64m -b 64m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile -k
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -r -t 64m -b 64m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -e -z -t 64m -b 64m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -e -w -z -t 64m -b 64m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -e -z -F -t 64m -b 64m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -e -z -w -F -t 64m -b 64m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -t 256m -b 256m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -w -t 256m -b 256m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile -k
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -r -t 256m -b 256m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -t 256m -b 256m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -w -t 256m -b 256m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile -k
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -r -t 256m -b 256m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -e -z -t 256m -b 256m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -e -w -z -t 256m -b 256m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -e -z -F -t 256m -b 256m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -e -z -w -F -t 256m -b 256m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -t 1m -b 1m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -w -t 1m -b 1m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile -k
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -r -t 1m -b 1m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -t 1m -b 1m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -w -t 1m -b 1m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile -k
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -r -t 1m -b 1m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -e -z -t 1m -b 1m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -e -w -z -t 1m -b 1m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -e -z -F -t 1m -b 1m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -e -z -w -F -t 1m -b 1m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -t 4m -b 4m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -w -t 4m -b 4m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile -k
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -r -t 4m -b 4m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -t 4m -b 4m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -w -t 4m -b 4m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile -k
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -r -t 4m -b 4m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -e -z -t 4m -b 4m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -e -w -z -t 4m -b 4m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -e -z -F -t 4m -b 4m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -e -z -w -F -t 4m -b 4m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -t 16m -b 16m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -w -t 16m -b 16m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile -k
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -r -t 16m -b 16m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -t 16m -b 16m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -w -t 16m -b 16m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile -k
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -r -t 16m -b 16m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -e -z -t 16m -b 16m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -e -w -z -t 16m -b 16m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -e -z -F -t 16m -b 16m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -e -z -w -F -t 16m -b 16m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -t 64m -b 64m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -w -t 64m -b 64m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile -k
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -r -t 64m -b 64m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -t 64m -b 64m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -w -t 64m -b 64m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile -k
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -r -t 64m -b 64m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -e -z -t 64m -b 64m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -e -w -z -t 64m -b 64m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -e -z -F -t 64m -b 64m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -e -z -w -F -t 64m -b 64m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -t 256m -b 256m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -w -t 256m -b 256m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile -k
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -r -t 256m -b 256m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -t 256m -b 256m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -w -t 256m -b 256m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile -k
+mpirun -n 4 ~/wx/mpiior -a mpiio -z -r -t 256m -b 256m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -e -z -t 256m -b 256m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -e -w -z -t 256m -b 256m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -e -z -F -t 256m -b 256m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 4 ~/wx/mpiior -a mpiio -e -z -w -F -t 256m -b 256m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -t 1m -b 1m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -w -t 1m -b 1m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile -k
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -r -t 1m -b 1m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -t 1m -b 1m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -w -t 1m -b 1m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile -k
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -r -t 1m -b 1m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -e -z -t 1m -b 1m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -e -w -z -t 1m -b 1m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -e -z -F -t 1m -b 1m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -e -z -w -F -t 1m -b 1m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -t 4m -b 4m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -w -t 4m -b 4m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile -k
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -r -t 4m -b 4m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -t 4m -b 4m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -w -t 4m -b 4m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile -k
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -r -t 4m -b 4m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -e -z -t 4m -b 4m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -e -w -z -t 4m -b 4m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -e -z -F -t 4m -b 4m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -e -z -w -F -t 4m -b 4m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -t 16m -b 16m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -w -t 16m -b 16m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile -k
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -r -t 16m -b 16m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -t 16m -b 16m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -w -t 16m -b 16m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile -k
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -r -t 16m -b 16m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -e -z -t 16m -b 16m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -e -w -z -t 16m -b 16m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -e -z -F -t 16m -b 16m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -e -z -w -F -t 16m -b 16m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -t 64m -b 64m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -w -t 64m -b 64m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile -k
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -r -t 64m -b 64m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -t 64m -b 64m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -w -t 64m -b 64m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile -k
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -r -t 64m -b 64m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -e -z -t 64m -b 64m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -e -w -z -t 64m -b 64m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -e -z -F -t 64m -b 64m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -e -z -w -F -t 64m -b 64m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -t 256m -b 256m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -w -t 256m -b 256m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile -k
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -r -t 256m -b 256m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -t 256m -b 256m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -w -t 256m -b 256m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile -k
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -r -t 256m -b 256m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -e -z -t 256m -b 256m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -e -w -z -t 256m -b 256m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -e -z -F -t 256m -b 256m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -e -z -w -F -t 256m -b 256m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -t 1m -b 1m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -w -t 1m -b 1m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile -k
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -r -t 1m -b 1m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -t 1m -b 1m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -w -t 1m -b 1m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile -k
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -r -t 1m -b 1m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -e -z -t 1m -b 1m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -e -w -z -t 1m -b 1m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -e -z -F -t 1m -b 1m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -e -z -w -F -t 1m -b 1m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -t 4m -b 4m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -w -t 4m -b 4m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile -k
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -r -t 4m -b 4m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -t 4m -b 4m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -w -t 4m -b 4m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile -k
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -r -t 4m -b 4m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -e -z -t 4m -b 4m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -e -w -z -t 4m -b 4m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -e -z -F -t 4m -b 4m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -e -z -w -F -t 4m -b 4m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -t 16m -b 16m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -w -t 16m -b 16m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile -k
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -r -t 16m -b 16m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -t 16m -b 16m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -w -t 16m -b 16m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile -k
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -r -t 16m -b 16m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -e -z -t 16m -b 16m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -e -w -z -t 16m -b 16m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -e -z -F -t 16m -b 16m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -e -z -w -F -t 16m -b 16m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -t 64m -b 64m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -w -t 64m -b 64m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile -k
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -r -t 64m -b 64m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -t 64m -b 64m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -w -t 64m -b 64m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile -k
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -r -t 64m -b 64m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -e -z -t 64m -b 64m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -e -w -z -t 64m -b 64m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -e -z -F -t 64m -b 64m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -e -z -w -F -t 64m -b 64m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -t 256m -b 256m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -w -t 256m -b 256m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile -k
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -r -t 256m -b 256m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -t 256m -b 256m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -w -t 256m -b 256m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile -k
+mpirun -n 8 ~/wx/mpiior -a mpiio -z -r -t 256m -b 256m -F -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -e -z -t 256m -b 256m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -e -w -z -t 256m -b 256m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -e -z -F -t 256m -b 256m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile
+mpirun -n 8 ~/wx/mpiior -a mpiio -e -z -w -F -t 256m -b 256m -o /thfs3/home/wuhuijun/wx/fs/lustre/testFile

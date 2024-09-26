@@ -16,9 +16,11 @@ if len(sys.argv) == 3:
         datpath = datpath[:-1]
     # 打印结果
     #print(contents)
+    os.environ["PATH"] = "/thfs3/home/wuhuijun/darshan-3.4.4-mpich/darshan-prefix/bin/" + ":" + os.environ["PATH"]
+    os.environ["LD_LIBRARY_PATH"] = "/thfs3/home/wuhuijun/darshan-3.4.4-mpich/darshan-prefix/lib/" + ":" + os.environ["LD_LIBRARY_PATH"]
     os.makedirs(datpath)
     for item in contents:
-        command = "darshan-parser --total " + darpath + "/" + item + " > " + datpath + "/" + item[:-8] + ".txt"
+        command = "darshan-parser --total --file --perf " + darpath + "/" + item + " > " + datpath + "/" + item[:-8] + ".txt"
         #sprint(command)
         result = subprocess.run(command, shell=True, capture_output=True, text=True)
 else:
