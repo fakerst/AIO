@@ -52,7 +52,6 @@ def convert_feature(df):
 
     add_small_value = 0.1
     set_NaNs_to = -10
-    print(df)
     for c in log_F:
         df[c] = pd.to_numeric(df[c], errors='coerce').fillna(value=set_NaNs_to)
         df[c + "_LOG10"] = np.log10(df[c] + add_small_value).fillna(value=set_NaNs_to)
@@ -100,3 +99,15 @@ def kill_proot():
     else:
         print("No proot process found.")
 
+
+def huber_approx_obj(y_pred, y_test):
+    """
+    Huber loss, adapted from https://stackoverflow.com/questions/45006341/xgboost-how-to-use-mae-as-objective-function
+    """
+    d = y_pred - y_test
+    h = 5  # h is delta in the graphic
+    scale = 1 + (d / h) ** 2
+    scale_sqrt = np.sqrt(scale)
+    grad = d / scale_sqrt
+    hess = 1 / scale / scale_sqrt
+    return grad, hess

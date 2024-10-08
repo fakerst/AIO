@@ -1,5 +1,7 @@
 import re
 import logging
+import subprocess
+import sys
 import numpy as np
 import pandas as pd
 import glob
@@ -356,7 +358,7 @@ def extracting_log(path):
     POSIX_TOTAL_BYTES = column_sum(POSIX_BYTES_READ, POSIX_BYTES_WRITTEN)
     POSIX_TOTAL_FILES = column_sum(POSIX_SHARED_FILES, POSIX_UNIQUE_FILES)
     #print(POSIX_TOTAL_ACCESSES)
-    print(POSIX_TOTAL_FILES)
+    #print(POSIX_TOTAL_FILES)
     mydata = pd.DataFrame(list(
         zip(POSIX_OPENS, POSIX_SEEKS, POSIX_STATS, POSIX_MMAPS, POSIX_FSYNCS, POSIX_MODE, POSIX_MEM_ALIGNMENT,
             POSIX_FILE_ALIGNMENT, NPROCS, POSIX_TOTAL_ACCESSES, POSIX_TOTAL_BYTES, POSIX_TOTAL_FILES)),
@@ -468,11 +470,11 @@ def extracting_perc1(path):
     POSIX_ACCESS4_COUNT = []
 
     darshan_files = glob.glob(path)
-
+    print(darshan_files)
     for file_name in darshan_files:
         with open(file_name) as infile:
             for line in infile:
-                if line == '# MPI-IO module data':
+                if line == '# MPI-IO module data\n':
                     break
                 reads_match = ds_reads_pattern.match(line)
                 if reads_match is not None:
@@ -843,7 +845,6 @@ def extracting_perc2(path):
             POSIX_SIZE_WRITE_1K_10K, POSIX_SIZE_WRITE_10K_100K, POSIX_SIZE_WRITE_100K_1M, POSIX_SIZE_WRITE_1M_4M,
             POSIX_SIZE_WRITE_4M_10M, POSIX_SIZE_WRITE_10M_100M, POSIX_SIZE_WRITE_100M_1G, POSIX_SIZE_WRITE_1G_PLUS)),
         columns=perc_features2)
-    #print(mydata)
     return mydata
 
 
@@ -857,7 +858,7 @@ def extracting_throught(path):
     for file_name in darshan_files:
         with open(file_name) as infile:
             for line in infile:
-                if line == '# MPI-IO module data\n':
+                if line == '# STDIO module data\n':
                     break
                 agg_perf_by_slowest_match = ds_agg_perf_by_slowest_pattern.match(line)
                 if agg_perf_by_slowest_match is not None:
@@ -872,10 +873,10 @@ def extracting_throught(path):
                     agg_perf_by_slowest.append(agg_perf_by_slowest_)
                     continue
 
+
     mydata = pd.DataFrame(list(
         zip(agg_perf_by_slowest)),
         columns=['agg_perf_by_slowest'])
-    #print(mydata)
     return mydata
 
 def extracting_romio(path):
@@ -885,21 +886,35 @@ def extracting_romio(path):
     ds_write = []
     cb_nodes = []
     cb_config_list = []
+    stripe_size = []
+    stripe_count = []
+    gkfs_chunksize = []
+    gkfs_dirents_buff_size = []
+    gkfs_daemon_io_xstreams = []
+    gkfs_daemon_handler_xstreams = []
 
     darshan_files = glob.glob(path)
 
     for file_name in darshan_files:
-        numbers = re.findall(r'(\d+)', file_name)[-6:]
-        cb_read.append(numbers[0])
-        cb_write.append(numbers[1])
-        ds_read.append(numbers[2])
-        ds_write.append(numbers[3])
-        cb_nodes.append(numbers[4])
-        cb_config_list.append(numbers[5])
+        last_12 = file_name.split('_')[-12:]
+        last_12[-1] = last_12[-1].replace('.txt', '')
+        # print(last_12)
+        cb_read.append(last_12[0])
+        cb_write.append(last_12[1])
+        ds_read.append(last_12[2])
+        ds_write.append(last_12[3])
+        cb_nodes.append(last_12[4])
+        cb_config_list.append(last_12[5])
+        stripe_size.append(last_12[6])
+        stripe_count.append(last_12[7])
+        gkfs_chunksize.append(last_12[8])
+        gkfs_dirents_buff_size.append(last_12[9])
+        gkfs_daemon_io_xstreams.append(last_12[10])
+        gkfs_daemon_handler_xstreams.append(last_12[11])
 
     mydata = pd.DataFrame(list(
-        zip(cb_read, cb_write, ds_read, ds_write, cb_nodes, cb_config_list)),
-        columns=['cb_read', 'cb_write', 'ds_read', 'ds_write', 'cb_nodes', 'cb_config_list'])
+        zip(cb_read, cb_write, ds_read, ds_write, cb_nodes, cb_config_list, stripe_size, stripe_count, gkfs_chunksize, gkfs_dirents_buff_size, gkfs_daemon_io_xstreams, gkfs_daemon_handler_xstreams)),
+        columns=['cb_read', 'cb_write', 'ds_read', 'ds_write', 'cb_nodes', 'cb_config_list', 'stripe_size', 'stripe_count', 'gkfs_chunksize', 'gkfs_dirents_buff_size', 'gkfs_daemon_io_xstreams', 'gkfs_daemon_handler_xstreams'])
     return mydata
 
 
@@ -909,36 +924,42 @@ def extracting_darshan(path):
     df3 = extracting_perc2(path)
     df4 = extracting_throught(path)
     df5 = extracting_romio(path)
-    return pd.concat([df1, df2, df3, df5, df4], axis=1)
+    df = pd.concat([df1, df2, df3, df5, df4], axis=1)
+    df = convert_POSIX_features_to_percentages(df)
+    df = log_scale_dataset(df)
+    return df
 
+def extracting_darshan57(path):
+    df1 = extracting_log(path)
+    df2 = extracting_perc1(path)
+    df3 = extracting_perc2(path)
+    df4 = extracting_throught(path)
+    df = pd.concat([df1, df2, df3, df4], axis=1)
+    column_names = list(df.columns)
+    # for index, row in df.iterrows():
+    #     for column in df.columns:
+    #         print(column, ":", row[column])
+    df = convert_POSIX_features_to_percentages(df)
+    df = log_scale_dataset(df)
+
+    return df
 
 if __name__ == "__main__":
     pd.set_option('display.max_columns', 1000)
     pd.set_option('display.width', 1000)
     pd.set_option('display.max_colwidth', 1000)
-    path = '../dataset-txt/*.txt'
-    df = extracting_darshan(path)
 
-    column_names = list(df.columns)
-    #:print(len(column_names))
-    for index, row in df.iterrows():
-        #print("行索引:", index)
-        for column in df.columns:
-            pass
-            #print(column, ":", row[column])
-    #df.to_csv('../mydataoo.csv', index=False)
-    print(df['POSIX_TOTAL_FILES'])
-    df = convert_POSIX_features_to_percentages(df)
-    df = log_scale_dataset(df)
-    #df.to_csv('../mydatacc.csv', index=False)
-    column_names = list(df.columns)
-    print(len(column_names))
-    #print(column_names)
-    for index, row in df.iterrows():
-        #print("行索引:", index)
-        for column in df.columns:
-            pass
-            #print(column, ":", row[column])
+    path = sys.argv[1]
+    datapath = sys.argv[2]
+    df = extracting_darshan(path + '/*.txt')
 
-    df.to_csv('./mydatac.csv', index=False)
+
+    # column_names = list(df.columns)
+    # for index, row in df.iterrows():
+    #     for column in df.columns:
+    #         print(column, ":", row[column])
+
+    df.to_csv(datapath, index=False)
+    cmd = "rm -rf " + path
+    subprocess.run(cmd, shell=True, capture_output=False, text=True)
 

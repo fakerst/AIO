@@ -30,7 +30,6 @@ def get_unique_files(df, log_file_path):
             if procmatch:
                 global nprocs
                 nprocs = int(procmatch.group(2))
-                print(nprocs)
 
             if pmatch_int:
                 file_name = pmatch_int.group(6)

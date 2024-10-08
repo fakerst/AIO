@@ -18,18 +18,20 @@ if __name__ == "__main__":
     classify_csv = sys.argv[3]
     df1 = pd.read_csv(lustre_csv)
     df2 = pd.read_csv(gekkofs_csv)
-    #df1 = pd.read_csv('csv/lfs-s3a.csv')
-    #df2 = pd.read_csv('csv/gkfs-s3a.csv')
     df1['fs'] = 1
 
     x = 0
     for (index1, row1), (index2, row2) in zip(df1.iterrows(), df2.iterrows()):
-        if row1['agg_perf_by_slowest'] < row2['agg_perf_by_slowest']:
+        if row1['agg_perf_by_slowest'] <= row2['agg_perf_by_slowest']:
             #print(row1['agg_perf_by_slowest'])
             #print(row2['agg_perf_by_slowest'])
             df1.at[index1, 'fs'] = 2
             x += 1
 
-    print(x)
-    #df1.to_csv('classify-s3a2.csv', index=False)
+    #print(x)
     df1.to_csv(classify_csv, index=False)
+
+    cmd = "rm -rf " + lustre_csv
+    subprocess.run(cmd, shell=True, capture_output=False, text=True)
+    cmd = "rm -rf " + gekkofs_csv
+    subprocess.run(cmd, shell=True, capture_output=False, text=True)

@@ -1,15 +1,32 @@
 import os
 import shutil
+import subprocess
 import sys
 
 
 def find_duplicate_files(folder1, folder2):
     # 获取文件夹中的所有文件列表
-    files1 = set(os.listdir(folder1))
-    files2 = set(os.listdir(folder2))
+    cmd = "cp -r " + folder1 + " " + folder1 + "1"
+    subprocess.run(cmd, shell=True, capture_output=False, text=True)
+    cmd = "cp -r " + folder2 + " " + folder2 + "1"
+    subprocess.run(cmd, shell=True, capture_output=False, text=True)
 
+    for filename in os.listdir(folder1 + "1"):
+        base_name = '_'.join(filename.split('_')[:-12]) + '.txt'
+        os.rename(os.path.join(folder1 + "1", filename), os.path.join(folder1 + "1", base_name))
+
+    for filename in os.listdir(folder2 + "1"):
+        base_name = '_'.join(filename.split('_')[:-12]) + '.txt'
+        os.rename(os.path.join(folder2 + "1", filename), os.path.join(folder2 + "1", base_name))
+
+    files1 = set(os.listdir(folder1 + "1"))
+    files2 = set(os.listdir(folder2 + "1"))
+
+
+    #print(files1)
     # 找到重复的文件列表
     duplicates = files1.intersection(files2)
+    #print(duplicates)
 
     #print(len(duplicates))
     # 创建保存重复文件的文件夹
@@ -27,16 +44,10 @@ def find_duplicate_files(folder1, folder2):
 
 
 def remove_unique_files(folder1, folder2):
-    # 获取文件夹中的所有文件列表
     files1 = set(os.listdir(folder1))
     files2 = set(os.listdir(folder2))
 
-    # 找到不重复的文件列表
     unique_files = files1.symmetric_difference(files2)
-    #print(unique_files)
-    #print(len(unique_files))
-
-    # 删除不重复的文件
     for file in unique_files:
         file_path1 = os.path.join(folder1, file)
         file_path2 = os.path.join(folder2, file)
@@ -52,12 +63,10 @@ def remove_unique_files(folder1, folder2):
 
 
 
-if __name__ == "__main__":
-
-    # 示例用法
-    folder1 = sys.argv[1]  # 第一个文件夹的路径
-    folder2 = sys.argv[2]  # 第二个文件夹的路径
+if __name__ == "__main_":
+    folder1 = sys.argv[1]
+    folder2 = sys.argv[2]
 
     find_duplicate_files(folder1, folder2)
 
-    remove_unique_files(folder1, folder2)
+    remove_unique_files(folder1 + "1", folder2 + "1")

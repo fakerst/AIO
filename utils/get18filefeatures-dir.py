@@ -26,235 +26,6 @@ def get_number_columns(df):
     return df.columns[np.logical_or(df.dtypes == np.float64, df.dtypes == np.int64)]
 
 
-def extracting_perc(path):
-    POSIX_SIZE_READ_0_100 = []
-    POSIX_SIZE_READ_100_1K = []
-    POSIX_SIZE_READ_1K_10K = []
-    POSIX_SIZE_READ_10K_100K = []
-    POSIX_SIZE_READ_100K_1M = []
-    POSIX_SIZE_READ_1M_4M = []
-    POSIX_SIZE_READ_4M_10M = []
-    POSIX_SIZE_READ_10M_100M = []
-    POSIX_SIZE_READ_100M_1G = []
-    POSIX_SIZE_READ_1G_PLUS = []
-    POSIX_SIZE_WRITE_0_100 = []
-    POSIX_SIZE_WRITE_100_1K = []
-    POSIX_SIZE_WRITE_1K_10K = []
-    POSIX_SIZE_WRITE_10K_100K = []
-    POSIX_SIZE_WRITE_100K_1M = []
-    POSIX_SIZE_WRITE_1M_4M = []
-    POSIX_SIZE_WRITE_4M_10M = []
-    POSIX_SIZE_WRITE_10M_100M = []
-    POSIX_SIZE_WRITE_100M_1G = []
-    POSIX_SIZE_WRITE_1G_PLUS = []
-
-    perc_features2 = ['POSIX_SIZE_READ_0_100',
-                      'POSIX_SIZE_READ_100_1K', 'POSIX_SIZE_READ_1K_10K',
-                      'POSIX_SIZE_READ_10K_100K', 'POSIX_SIZE_READ_100K_1M',
-                      'POSIX_SIZE_READ_1M_4M', 'POSIX_SIZE_READ_4M_10M',
-                      'POSIX_SIZE_READ_10M_100M', 'POSIX_SIZE_READ_100M_1G',
-                      'POSIX_SIZE_READ_1G_PLUS', 'POSIX_SIZE_WRITE_0_100',
-                      'POSIX_SIZE_WRITE_100_1K', 'POSIX_SIZE_WRITE_1K_10K',
-                      'POSIX_SIZE_WRITE_10K_100K', 'POSIX_SIZE_WRITE_100K_1M',
-                      'POSIX_SIZE_WRITE_1M_4M', 'POSIX_SIZE_WRITE_4M_10M',
-                      'POSIX_SIZE_WRITE_10M_100M', 'POSIX_SIZE_WRITE_100M_1G',
-                      'POSIX_SIZE_WRITE_1G_PLUS', ]
-
-    POSIX_SIZE_READ_0_100_PATTERN = '(total_POSIX_SIZE_READ_0_100:\s+)(\d+)'
-    ds_read_0_100_pattern = re.compile(POSIX_SIZE_READ_0_100_PATTERN)
-
-    POSIX_SIZE_READ_100_1K_PATTERN = '(total_POSIX_SIZE_READ_100_1K:\s+)(\d+)'
-    ds_read_100_1k_pattern = re.compile(POSIX_SIZE_READ_100_1K_PATTERN)
-
-    POSIX_SIZE_READ_1K_10K_PATTERN = '(total_POSIX_SIZE_READ_1K_10K:\s+)(\d+)'
-    ds_read_1k_10k_pattern = re.compile(POSIX_SIZE_READ_1K_10K_PATTERN)
-
-    POSIX_SIZE_READ_10K_100K_PATTERN = '(total_POSIX_SIZE_READ_10K_100K:\s+)(\d+)'
-    ds_read_10k_100k_pattern = re.compile(POSIX_SIZE_READ_10K_100K_PATTERN)
-
-    POSIX_SIZE_READ_100K_1M_PATTERN = '(total_POSIX_SIZE_READ_100K_1M:\s+)(\d+)'
-    ds_read_100k_1m_pattern = re.compile(POSIX_SIZE_READ_100K_1M_PATTERN)
-
-    POSIX_SIZE_READ_1M_4M_PATTERN = '(total_POSIX_SIZE_READ_1M_4M:\s+)(\d+)'
-    ds_read_1m_4m_pattern = re.compile(POSIX_SIZE_READ_1M_4M_PATTERN)
-
-    POSIX_SIZE_READ_4M_10M_PATTERN = '(total_POSIX_SIZE_READ_4M_10M:\s+)(\d+)'
-    ds_read_4m_10m_pattern = re.compile(POSIX_SIZE_READ_4M_10M_PATTERN)
-
-    POSIX_SIZE_READ_10M_100M_PATTERN = '(total_POSIX_SIZE_READ_10M_100M:\s+)(\d+)'
-    ds_read_10m_100m_pattern = re.compile(POSIX_SIZE_READ_10M_100M_PATTERN)
-
-    POSIX_SIZE_READ_100M_1G_PATTERN = '(total_POSIX_SIZE_READ_100M_1G:\s+)(\d+)'
-    ds_read_100m_1g_pattern = re.compile(POSIX_SIZE_READ_100M_1G_PATTERN)
-
-    POSIX_SIZE_READ_1G_PLUS_PATTERN = '(total_POSIX_SIZE_READ_1G_PLUS:\s+)(\d+)'
-    ds_read_1g_plus_pattern = re.compile(POSIX_SIZE_READ_1G_PLUS_PATTERN)
-
-    POSIX_SIZE_WRITE_0_100_PATTERN = '(total_POSIX_SIZE_WRITE_0_100:\s+)(\d+)'
-    ds_write_0_100_pattern = re.compile(POSIX_SIZE_WRITE_0_100_PATTERN)
-
-    POSIX_SIZE_WRITE_100_1K_PATTERN = '(total_POSIX_SIZE_WRITE_100_1K:\s+)(\d+)'
-    ds_write_100_1k_pattern = re.compile(POSIX_SIZE_WRITE_100_1K_PATTERN)
-
-    POSIX_SIZE_WRITE_1K_10K_PATTERN = '(total_POSIX_SIZE_WRITE_1K_10K:\s+)(\d+)'
-    ds_write_1k_10k_pattern = re.compile(POSIX_SIZE_WRITE_1K_10K_PATTERN)
-
-    POSIX_SIZE_WRITE_10K_100K_PATTERN = '(total_POSIX_SIZE_WRITE_10K_100K:\s+)(\d+)'
-    ds_write_10k_100k_pattern = re.compile(POSIX_SIZE_WRITE_10K_100K_PATTERN)
-
-    POSIX_SIZE_WRITE_100K_1M_PATTERN = '(total_POSIX_SIZE_WRITE_100K_1M:\s+)(\d+)'
-    ds_write_100k_1m_pattern = re.compile(POSIX_SIZE_WRITE_100K_1M_PATTERN)
-
-    POSIX_SIZE_WRITE_1M_4M_PATTERN = '(total_POSIX_SIZE_WRITE_1M_4M:\s+)(\d+)'
-    ds_write_1m_4m_pattern = re.compile(POSIX_SIZE_WRITE_1M_4M_PATTERN)
-
-    POSIX_SIZE_WRITE_4M_10M_PATTERN = '(total_POSIX_SIZE_WRITE_4M_10M:\s+)(\d+)'
-    ds_write_4m_10m_pattern = re.compile(POSIX_SIZE_WRITE_4M_10M_PATTERN)
-
-    POSIX_SIZE_WRITE_10M_100M_PATTERN = '(total_POSIX_SIZE_WRITE_10M_100M:\s+)(\d+)'
-    ds_write_10m_100m_pattern = re.compile(POSIX_SIZE_WRITE_10M_100M_PATTERN)
-
-    POSIX_SIZE_WRITE_100M_1G_PATTERN = '(total_POSIX_SIZE_WRITE_100M_1G:\s+)(\d+)'
-    ds_write_100m_1g_pattern = re.compile(POSIX_SIZE_WRITE_100M_1G_PATTERN)
-
-    POSIX_SIZE_WRITE_1G_PLUS_PATTERN = '(total_POSIX_SIZE_WRITE_1G_PLUS:\s+)(\d+)'
-    ds_write_1g_plus_pattern = re.compile(POSIX_SIZE_WRITE_1G_PLUS_PATTERN)
-
-    darshan_files = glob.glob(path)
-
-    for file_name in darshan_files:
-        with open(file_name) as infile:
-            for line in infile:
-                read_0_100_match = ds_read_0_100_pattern.match(line)
-                if read_0_100_match is not None:
-                    posix_read_0_100 = int(read_0_100_match.group(2))
-                    POSIX_SIZE_READ_0_100.append(posix_read_0_100)
-                    continue
-
-                read_100_1k_match = ds_read_100_1k_pattern.match(line)
-                if read_100_1k_match is not None:
-                    posix_read_100_1k = int(read_100_1k_match.group(2))
-                    POSIX_SIZE_READ_100_1K.append(posix_read_100_1k)
-                    continue
-
-                read_1k_10k_match = ds_read_1k_10k_pattern.match(line)
-                if read_1k_10k_match is not None:
-                    posix_read_1k_10k = int(read_1k_10k_match.group(2))
-                    POSIX_SIZE_READ_1K_10K.append(posix_read_1k_10k)
-                    continue
-
-                read_10k_100k_match = ds_read_10k_100k_pattern.match(line)
-                if read_10k_100k_match is not None:
-                    posix_read_10k_100k = int(read_10k_100k_match.group(2))
-                    POSIX_SIZE_READ_10K_100K.append(posix_read_10k_100k)
-                    continue
-
-                read_100k_1m_match = ds_read_100k_1m_pattern.match(line)
-                if read_100k_1m_match is not None:
-                    posix_read_100k_1m = int(read_100k_1m_match.group(2))
-                    POSIX_SIZE_READ_100K_1M.append(posix_read_100k_1m)
-                    continue
-
-                read_1m_4m_match = ds_read_1m_4m_pattern.match(line)
-                if read_1m_4m_match is not None:
-                    posix_read_1m_4m = int(read_1m_4m_match.group(2))
-                    POSIX_SIZE_READ_1M_4M.append(posix_read_1m_4m)
-                    continue
-
-                read_4m_10m_match = ds_read_4m_10m_pattern.match(line)
-                if read_4m_10m_match is not None:
-                    posix_read_4m_10m = int(read_4m_10m_match.group(2))
-                    POSIX_SIZE_READ_4M_10M.append(posix_read_4m_10m)
-                    continue
-
-                read_10m_100m_match = ds_read_10m_100m_pattern.match(line)
-                if read_10m_100m_match is not None:
-                    posix_read_10m_100m = int(read_10m_100m_match.group(2))
-                    POSIX_SIZE_READ_10M_100M.append(posix_read_10m_100m)
-                    continue
-
-                read_100m_1g_match = ds_read_100m_1g_pattern.match(line)
-                if read_100m_1g_match is not None:
-                    posix_read_100m_1g = int(read_100m_1g_match.group(2))
-                    POSIX_SIZE_READ_100M_1G.append(posix_read_100m_1g)
-                    continue
-
-                read_1g_plus_match = ds_read_1g_plus_pattern.match(line)
-                if read_1g_plus_match is not None:
-                    posix_read_1g_plus = int(read_1g_plus_match.group(2))
-                    POSIX_SIZE_READ_1G_PLUS.append(posix_read_1g_plus)
-                    continue
-
-                write_0_100_match = ds_write_0_100_pattern.match(line)
-                if write_0_100_match is not None:
-                    posix_write_0_100 = int(write_0_100_match.group(2))
-                    POSIX_SIZE_WRITE_0_100.append(posix_write_0_100)
-                    continue
-
-                write_100_1k_match = ds_write_100_1k_pattern.match(line)
-                if write_100_1k_match is not None:
-                    posix_write_100_1k = int(write_100_1k_match.group(2))
-                    POSIX_SIZE_WRITE_100_1K.append(posix_write_100_1k)
-                    continue
-
-                write_1k_10k_match = ds_write_1k_10k_pattern.match(line)
-                if write_1k_10k_match is not None:
-                    posix_write_1k_10k = int(write_1k_10k_match.group(2))
-                    POSIX_SIZE_WRITE_1K_10K.append(posix_write_1k_10k)
-                    continue
-
-                write_10k_100k_match = ds_write_10k_100k_pattern.match(line)
-                if write_10k_100k_match is not None:
-                    posix_write_10k_100k = int(write_10k_100k_match.group(2))
-                    POSIX_SIZE_WRITE_10K_100K.append(posix_write_10k_100k)
-                    continue
-
-                write_100k_1m_match = ds_write_100k_1m_pattern.match(line)
-                if write_100k_1m_match is not None:
-                    posix_write_100k_1m = int(write_100k_1m_match.group(2))
-                    POSIX_SIZE_WRITE_100K_1M.append(posix_write_100k_1m)
-                    continue
-
-                write_1m_4m_match = ds_write_1m_4m_pattern.match(line)
-                if write_1m_4m_match is not None:
-                    posix_write_1m_4m = int(write_1m_4m_match.group(2))
-                    POSIX_SIZE_WRITE_1M_4M.append(posix_write_1m_4m)
-                    continue
-
-                write_4m_10m_match = ds_write_4m_10m_pattern.match(line)
-                if write_4m_10m_match is not None:
-                    posix_write_4m_10m = int(write_4m_10m_match.group(2))
-                    POSIX_SIZE_WRITE_4M_10M.append(posix_write_4m_10m)
-                    continue
-
-                write_10m_100m_match = ds_write_10m_100m_pattern.match(line)
-                if write_10m_100m_match is not None:
-                    posix_write_10m_100m = int(write_10m_100m_match.group(2))
-                    POSIX_SIZE_WRITE_10M_100M.append(posix_write_10m_100m)
-                    continue
-
-                write_100m_1g_match = ds_write_100m_1g_pattern.match(line)
-                if write_100m_1g_match is not None:
-                    posix_write_100m_1g = int(write_100m_1g_match.group(2))
-                    POSIX_SIZE_WRITE_100M_1G.append(posix_write_100m_1g)
-                    continue
-
-                write_1g_plus_match = ds_write_1g_plus_pattern.match(line)
-                if write_1g_plus_match is not None:
-                    posix_write_1g_plus = int(write_1g_plus_match.group(2))
-                    POSIX_SIZE_WRITE_1G_PLUS.append(posix_write_1g_plus)
-                    continue
-
-    mydata = pd.DataFrame(list(
-        zip(POSIX_SIZE_READ_0_100, POSIX_SIZE_READ_100_1K, POSIX_SIZE_READ_1K_10K, POSIX_SIZE_READ_10K_100K,
-            POSIX_SIZE_READ_100K_1M, POSIX_SIZE_READ_1M_4M, POSIX_SIZE_READ_4M_10M, POSIX_SIZE_READ_10M_100M,
-            POSIX_SIZE_READ_100M_1G, POSIX_SIZE_READ_1G_PLUS, POSIX_SIZE_WRITE_0_100, POSIX_SIZE_WRITE_100_1K,
-            POSIX_SIZE_WRITE_1K_10K, POSIX_SIZE_WRITE_10K_100K, POSIX_SIZE_WRITE_100K_1M, POSIX_SIZE_WRITE_1M_4M,
-            POSIX_SIZE_WRITE_4M_10M, POSIX_SIZE_WRITE_10M_100M, POSIX_SIZE_WRITE_100M_1G, POSIX_SIZE_WRITE_1G_PLUS)),
-        columns=perc_features2)
-    return mydata
-
-
 def extracting_darshan(path):
     log_features = ['POSIX', 'MPIIO', 'HDF5', 'POSIX_OPENS', 'POSIX_FSYNCS', 'NPROCS', 'File_Per_Proc', 'POSIX_READS',
                     'POSIX_WRITES',
@@ -385,7 +156,7 @@ def extracting_darshan(path):
 
     darshan_files = glob.glob(path)
 
-    print("file numbers %s" % len(darshan_files))
+    #print("file numbers %s" % len(darshan_files))
     for file_name in darshan_files:
         # print(file_name)
         with open(file_name) as infile:
@@ -558,7 +329,7 @@ def extracting_darshan(path):
                         MPIIO_VIEWS.append(0)
                     break
 
-        print(len(NPROCS))
+        #print(len(NPROCS))
         if file_name[-5] == "F":
             file_per_proc = 1
         else:
@@ -568,8 +339,8 @@ def extracting_darshan(path):
         HDF5.append(hdf5)
         File_Per_Proc.append(file_per_proc)
 
-    print(len(NPROCS))
-    print(len(POSIX_OPENS))
+    #print(len(NPROCS))
+    #print(len(POSIX_OPENS))
     mydata = pd.DataFrame(list(
         zip(POSIX, MPIIO, HDF5, POSIX_OPENS, POSIX_FSYNCS, NPROCS, File_Per_Proc, POSIX_READS, POSIX_WRITES,
             POSIX_SEQ_READS,
@@ -637,17 +408,15 @@ if __name__ == "__main__":
         datname = sys.argv[2]
         if darpath[-1] == '/':
             darpath = darpath[:-1]
-        df1 = extracting_darshan(darpath + "/*")
-        df2 = extracting_perc(darpath + "/*")
-        df = pd.concat([df1, df2], axis=1)
-        # print(len(df))
-        # column_names = list(df.columns)
-        # print(len(column_names))
+        df = extracting_darshan(darpath + "/*")
         df = convert(df)
-        # for index, row in df.iterrows():
+        #for index, row in df.iterrows():
         #    print("行索引:", index)
         #    for column in df.columns:
         #        print(column, ":", row[column])
         #    print()
 
         df.to_csv(datname, index=False)
+
+        cmd = "rm -rf " + darpath
+        subprocess.run(cmd, shell=True, capture_output=False, text=True)

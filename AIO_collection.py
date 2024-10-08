@@ -3,9 +3,10 @@ import configparser
 import os
 import random
 import subprocess
+import time
 from utils.utils_else import *
 
-def uniform_samples(range_start, range_end, num_samples=3000):
+def uniform_samples(range_start, range_end, num_samples=30):
     step_size = (range_end - range_start + 1) / num_samples
     samples = []
 
@@ -64,8 +65,8 @@ romio_ds_write = uniform_samples(0,2)
 cb_nodes = uniform_samples(1,64)
 cb_config_list = uniform_samples(1,8)
 romio_config = [romio_cb_read,romio_cb_write,romio_ds_read,romio_ds_write,cb_nodes,cb_config_list]
-gkfs_config = [gkfs_distributor,gkfs_chunksize,gkfs_dirents_buff_size,gkfs_daemon_io_xstreams,gkfs_daemon_handler_xstreams]
 lustre_config = [stripe_size,stripe_count]
+gkfs_config = [gkfs_chunksize,gkfs_dirents_buff_size,gkfs_daemon_io_xstreams,gkfs_daemon_handler_xstreams]
 
 transposed = list(zip(*gkfs_config))
 sorted_transposed = sorted(transposed)
@@ -76,7 +77,8 @@ gkfs_different_indices = get_different_gkfs_configs_indices(gkfs_sorted_configs)
 
 def collect(fs_type, output):
     dir_ = config_env(fs_type, str(output))
-    collect_trace(fs_type, dir_)
+    collect_trace_test(fs_type, dir_)
+    #collect_trace(fs_type, dir_)
 
 
 def config_env(fs_type, output):
@@ -103,16 +105,35 @@ def config_env(fs_type, output):
         pass
 
 def salloc(N):
-    cmd = "nohup salloc -p thcp3 -N " + str(N) +" >/dev/null &"
-    node_list = subprocess.run(cmd, shell=True, capture_output=False, text=True)
-    return node_list
+    pass
+    #config = configparser.ConfigParser()
+    #config.read("config/storage.ini")
+    #cmd = config.get('scripts_path','salloc_path') + " " + str(N)
+    #cmd = "salloc -p thcp3 -N " + str(N) + " &"
+    #subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    #print(cmd)
+    #subprocess.run(cmd, shell=True, capture_output=False, text=True)
+    #time.sleep(15)
+
+def scancel():
+    cmd = "scancel " + get_jobid()
+    subprocess.run(cmd, shell=True, capture_output=False, text=True)
 
 def get_node_list():
     cmd = "squeue"
     output = subprocess.run(cmd, shell=True, capture_output=True, text=True)
     stdout = output.stdout
+    print(stdout)
     first_line = stdout.splitlines()[1]
     node_info = first_line.split()[-1]
+    return node_info
+
+def get_jobid():
+    cmd = "squeue"
+    output = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+    stdout = output.stdout
+    first_line = stdout.splitlines()[1]
+    node_info = first_line.split()[0]
     return node_info
 
 def run_gkfs(gekkofs_home,node):
@@ -122,7 +143,6 @@ def run_gkfs(gekkofs_home,node):
         './restart.sh ' + node
     ]
     cmd = " && ".join(commands)
-    #cmd = "squeue"
     subprocess.run(cmd, shell=True, capture_output=False, text=True)
 
 def make_install(gekkofs_home):
@@ -138,6 +158,26 @@ def make_install(gekkofs_home):
     cmd = " && ".join(commands)
     subprocess.run(cmd, shell=True, capture_output=False, text=True)
 
+def collect_trace_test(fs_type, dir_):
+    blocksize = ["1m", "4m", "16m", "64m", "256m", "1g"]
+    xfersize = ["256k", "1m", "4m", "16m", "64m", "256m"]
+    offset = [0, 0, 1, 2, 3, 4]
+    count = 0
+    for i in range(len(xfersize)):
+        for j in range(offset[i], len(blocksize)):
+            # stardard
+            romio = get_romio_config(count)
+            romio_str = '_'.join(map(str, romio))
+            lustre = get_lustre_config(count)
+            lustre_str = '_'.join(map(str, lustre))
+            gkfs = get_gkfs_config(count)
+            gkfs_str = '_'.join(map(str, gkfs))
+            command = r"mpirun -n 4 ~/wx/mpiior -a mpiio -t %s -b %s -o %s" % (xfersize[i], blocksize[j], dir_+"testFile")
+            os.environ["DARSHAN_LOGFILE"] = os.environ["DARSHAN_LOGPATH"] + "/N-1_n-4_m_w_t-%s_b-%s_%s_%s_%s.darshan" % (xfersize[i], blocksize[j], romio_str,lustre_str,gkfs_str)
+            print(command)
+            runcmd(command, fs_type, dir_, romio, count)
+            count+=1
+
 def collect_trace(fs_type, dir_):
     nodes = [2,4,8,16]
     nproc = [2,4,8,16]
@@ -146,10 +186,7 @@ def collect_trace(fs_type, dir_):
     offset = [0, 0, 1, 2, 3, 4]
     count = 0
     for N in range(len(nodes)):
-        #node_list = salloc(N)
-        #run_gkfs(node_list)
-        if count == 1:
-            break
+        jobid,nodes_list = salloc(N)
         for n in range(N,len(nproc)):
             for i in range(len(xfersize)):
                 for j in range(offset[i], len(blocksize)):
@@ -160,205 +197,270 @@ def collect_trace(fs_type, dir_):
                     lustre_str = '_'.join(map(str, lustre))
                     gkfs = get_gkfs_config(count)
                     gkfs_str = '_'.join(map(str, gkfs))
-                    command = r"yhrun -p thcp3 -N %s -n %s ~/wx/mpiior -a mpiio -t %s -b %s -o %s" % (str(nodes[N]),str(nproc[n]),xfersize[i], blocksize[j], dir_+"testFile")
-                    os.environ["DARSHAN_LOGFILE"] = os.environ["DARSHAN_LOGPATH"] + "/N-%s_n-%s_m_wr_t-%s_b-%s_%s_%s_%s.darshan" % (
-                    str(nodes[N]),str(nproc[n]),xfersize[i], blocksize[j], romio_str,lustre_str,gkfs_str)
+                    command = r"yhrun -p thcp3 -w %s -N %s -n %s ~/wx/mpiior -a mpiio -t %s -b %s -o %s" % (nodes_list,str(nodes[N]),str(nproc[n]),xfersize[i], blocksize[j], dir_+"testFile")
+                    os.environ["DARSHAN_LOGFILE"] = os.environ["DARSHAN_LOGPATH"] + "/N-%s_n-%s_m_wr_t-%s_b-%s_%s_%s_%s.darshan" % (str(nodes[N]),str(nproc[n]),xfersize[i], blocksize[j], romio_str,lustre_str,gkfs_str)
                     print(command)
-                    #runcmd(command, fs_type, dir_, romio, count)
+                    runcmd(command, fs_type, dir_, romio, count, nodes_list)
                     count+=1
-                    print(os.environ["DARSHAN_LOGFILE"])
                     break
 
                     romio = get_romio_config(count)
                     romio_str = '_'.join(map(str, romio))
-                    command = r"mpirun -n 8 ~/wx/mpiior -a mpiio -w -t %s -b %s -o %s -k" % (xfersize[i], blocksize[j], dir_+"testFile")
-                    os.environ["DARSHAN_LOGFILE"] = os.environ["DARSHAN_LOGPATH"] + "/N-1_n-8_m_w_t-%s_b-%s_%s.darshan" % (
-                    xfersize[i], blocksize[j], romio_str)
+                    lustre = get_lustre_config(count)
+                    lustre_str = '_'.join(map(str, lustre))
+                    gkfs = get_gkfs_config(count)
+                    gkfs_str = '_'.join(map(str, gkfs))
+                    command = r"yhrun -p thcp3 -w %s -N %s -n %s ~/wx/mpiior -a mpiio -w -t %s -b %s -o %s -k" % (nodes_list,str(nodes[N]),str(nproc[n]),xfersize[i], blocksize[j], dir_+"testFile")
+                    os.environ["DARSHAN_LOGFILE"] = os.environ["DARSHAN_LOGPATH"] + "/N-%s_n-%s_m_w_t-%s_b-%s_%s_%s_%s.darshan" % (str(nodes[N]),str(nproc[n]),xfersize[i], blocksize[j], romio_str,lustre_str,gkfs_str)
                     print(command)
-                    runcmd(command, fs_type, dir_, romio, count)
+                    runcmd(command, fs_type, dir_, romio, count, nodes_list)
                     count+=1
 
                     romio = get_romio_config(count)
                     romio_str = '_'.join(map(str, romio))
-                    command = r"mpirun -n 8 ~/wx/mpiior -a mpiio -r -t %s -b %s -o %s" % (xfersize[i], blocksize[j], dir_+"testFile")
-                    os.environ["DARSHAN_LOGFILE"] = os.environ["DARSHAN_LOGPATH"] + "/N-1_n-8_m_r_t-%s_b-%s_%s.darshan" % (
-                    xfersize[i], blocksize[j], romio_str)
+                    lustre = get_lustre_config(count)
+                    lustre_str = '_'.join(map(str, lustre))
+                    gkfs = get_gkfs_config(count)
+                    gkfs_str = '_'.join(map(str, gkfs))
+                    command = r"yhrun -p thcp3 -w %s -N %s -n %s ~/wx/mpiior -a mpiio -r -t %s -b %s -o %s" % (nodes_list,str(nodes[N]),str(nproc[n]),xfersize[i], blocksize[j], dir_+"testFile")
+                    os.environ["DARSHAN_LOGFILE"] = os.environ["DARSHAN_LOGPATH"] + "/N-%s_n-%s_m_r_t-%s_b-%s_%s_%s_%s.darshan" % (str(nodes[N]),str(nproc[n]),xfersize[i], blocksize[j], romio_str,lustre_str,gkfs_str)
                     print(command)
-                    runcmd(command, fs_type, dir_, romio, count)
+                    runcmd(command, fs_type, dir_, romio, count, nodes_list)
                     count+=1
 
                     # random
                     romio = get_romio_config(count)
                     romio_str = '_'.join(map(str, romio))
-                    command = r"mpirun -n 8 ~/wx/mpiior -a mpiio -z -t %s -b %s -o %s" % (xfersize[i], blocksize[j], dir_+"testFile")
-                    os.environ["DARSHAN_LOGFILE"] = os.environ["DARSHAN_LOGPATH"] + "/N-1_n-8_m_z_wr_t-%s_b-%s_%s.darshan" % (
-                    xfersize[i], blocksize[j], romio_str)
+                    lustre = get_lustre_config(count)
+                    lustre_str = '_'.join(map(str, lustre))
+                    gkfs = get_gkfs_config(count)
+                    gkfs_str = '_'.join(map(str, gkfs))
+                    command = r"yhrun -p thcp3 -w %s -N %s -n %s ~/wx/mpiior -a mpiio -z -t %s -b %s -o %s" % (nodes_list,str(nodes[N]),str(nproc[n]),xfersize[i], blocksize[j], dir_+"testFile")
+                    os.environ["DARSHAN_LOGFILE"] = os.environ["DARSHAN_LOGPATH"] + "/N-%s_n-%s_m_wr_z_t-%s_b-%s_%s_%s_%s.darshan" % (str(nodes[N]),str(nproc[n]),xfersize[i], blocksize[j], romio_str,lustre_str,gkfs_str)
                     print(command)
-                    runcmd(command, fs_type, dir_, romio, count)
+                    if xfersize[i] != blocksize[j]:
+                        runcmd(command, fs_type, dir_, romio, count, nodes_list)
                     count+=1
 
                     romio = get_romio_config(count)
                     romio_str = '_'.join(map(str, romio))
-                    command = r"mpirun -n 8 ~/wx/mpiior -a mpiio -z -w -t %s -b %s -o %s -k" % (xfersize[i], blocksize[j], dir_+"testFile")
-                    os.environ["DARSHAN_LOGFILE"] = os.environ["DARSHAN_LOGPATH"] + "/N-1_n-8_m_z_w_t-%s_b-%s_%s.darshan" % (
-                    xfersize[i], blocksize[j], romio_str)
+                    lustre = get_lustre_config(count)
+                    lustre_str = '_'.join(map(str, lustre))
+                    gkfs = get_gkfs_config(count)
+                    gkfs_str = '_'.join(map(str, gkfs))
+                    command = r"yhrun -p thcp3 -w %s -N %s -n %s ~/wx/mpiior -a mpiio -w -z -t %s -b %s -o %s -k" % (nodes_list,str(nodes[N]),str(nproc[n]),xfersize[i], blocksize[j], dir_+"testFile")
+                    os.environ["DARSHAN_LOGFILE"] = os.environ["DARSHAN_LOGPATH"] + "/N-%s_n-%s_m_w_z_t-%s_b-%s_%s_%s_%s.darshan" % (str(nodes[N]),str(nproc[n]),xfersize[i], blocksize[j], romio_str,lustre_str,gkfs_str)
                     print(command)
-                    runcmd(command, fs_type, dir_, romio, count)
+                    if xfersize[i] != blocksize[j]:
+                        runcmd(command, fs_type, dir_, romio, count, nodes_list)
                     count+=1
 
                     romio = get_romio_config(count)
                     romio_str = '_'.join(map(str, romio))
-                    command = r"mpirun -n 8 ~/wx/mpiior -a mpiio -z -r -t %s -b %s -o %s" % (xfersize[i], blocksize[j], dir_+"testFile")
-                    os.environ["DARSHAN_LOGFILE"] = os.environ["DARSHAN_LOGPATH"] + "/N-1_n-8_m_z_r_t-%s_b-%s_%s.darshan" % (
-                    xfersize[i], blocksize[j], romio_str)
+                    lustre = get_lustre_config(count)
+                    lustre_str = '_'.join(map(str, lustre))
+                    gkfs = get_gkfs_config(count)
+                    gkfs_str = '_'.join(map(str, gkfs))
+                    command = r"yhrun -p thcp3 -w %s -N %s -n %s ~/wx/mpiior -a mpiio -r -z -t %s -b %s -o %s" % (nodes_list,str(nodes[N]),str(nproc[n]),xfersize[i], blocksize[j], dir_+"testFile")
+                    os.environ["DARSHAN_LOGFILE"] = os.environ["DARSHAN_LOGPATH"] + "/N-%s_n-%s_m_r_z_t-%s_b-%s_%s_%s_%s.darshan" % (str(nodes[N]),str(nproc[n]),xfersize[i], blocksize[j], romio_str,lustre_str,gkfs_str)
                     print(command)
-                    runcmd(command, fs_type, dir_, romio, count)
+                    if xfersize[i] != blocksize[j]:
+                        runcmd(command, fs_type, dir_, romio, count, nodes_list)
                     count+=1
 
                     # random share
                     romio = get_romio_config(count)
                     romio_str = '_'.join(map(str, romio))
-                    command = r"mpirun -n 8 ~/wx/mpiior -a mpiio -z -t %s -b %s -F -o %s" % (xfersize[i], blocksize[j], dir_+"testFile")
-                    os.environ["DARSHAN_LOGFILE"] = os.environ["DARSHAN_LOGPATH"] + "/N-1_n-8_m_z_wr_F_t-%s_b-%s_%s.darshan" % (
-                    xfersize[i], blocksize[j], romio_str)
+                    lustre = get_lustre_config(count)
+                    lustre_str = '_'.join(map(str, lustre))
+                    gkfs = get_gkfs_config(count)
+                    gkfs_str = '_'.join(map(str, gkfs))
+                    command = r"yhrun -p thcp3 -w %s -N %s -n %s ~/wx/mpiior -a mpiio -z -F -t %s -b %s -o %s" % (nodes_list,str(nodes[N]),str(nproc[n]),xfersize[i], blocksize[j], dir_+"testFile")
+                    os.environ["DARSHAN_LOGFILE"] = os.environ["DARSHAN_LOGPATH"] + "/N-%s_n-%s_m_wr_z_F_t-%s_b-%s_%s_%s_%s.darshan" % (str(nodes[N]),str(nproc[n]),xfersize[i], blocksize[j], romio_str,lustre_str,gkfs_str)
                     print(command)
-                    runcmd(command, fs_type, dir_, romio, count)
+                    if xfersize[i] != blocksize[j]:
+                        runcmd(command, fs_type, dir_, romio, count, nodes_list)
                     count+=1
 
                     romio = get_romio_config(count)
                     romio_str = '_'.join(map(str, romio))
-                    command = r"mpirun -n 8 ~/wx/mpiior -a mpiio -z -w -t %s -b %s -F -o %s -k" % (xfersize[i], blocksize[j], dir_+"testFile")
-                    os.environ["DARSHAN_LOGFILE"] = os.environ["DARSHAN_LOGPATH"] + "/N-1_n-8_m_z_w_F_t-%s_b-%s_%s.darshan" % (
-                    xfersize[i], blocksize[j], romio_str)
+                    lustre = get_lustre_config(count)
+                    lustre_str = '_'.join(map(str, lustre))
+                    gkfs = get_gkfs_config(count)
+                    gkfs_str = '_'.join(map(str, gkfs))
+                    command = r"yhrun -p thcp3 -w %s -N %s -n %s ~/wx/mpiior -a mpiio -w -z -F -t %s -b %s -o %s -k" % (nodes_list,str(nodes[N]),str(nproc[n]),xfersize[i], blocksize[j], dir_+"testFile")
+                    os.environ["DARSHAN_LOGFILE"] = os.environ["DARSHAN_LOGPATH"] + "/N-%s_n-%s_m_w_z_F_t-%s_b-%s_%s_%s_%s.darshan" % (str(nodes[N]),str(nproc[n]),xfersize[i], blocksize[j], romio_str,lustre_str,gkfs_str)
                     print(command)
-                    runcmd(command, fs_type, dir_, romio, count)
+                    if xfersize[i] != blocksize[j]:
+                        runcmd(command, fs_type, dir_, romio, count, nodes_list)
                     count+=1
 
                     romio = get_romio_config(count)
                     romio_str = '_'.join(map(str, romio))
-                    command = r"mpirun -n 8 ~/wx/mpiior -a mpiio -z -r -t %s -b %s -F -o %s" % (xfersize[i], blocksize[j], dir_+"testFile")
-                    os.environ["DARSHAN_LOGFILE"] = os.environ["DARSHAN_LOGPATH"] + "/N-1_n-8_m_z_r_F_t-%s_b-%s_%s.darshan" % (
-                    xfersize[i], blocksize[j], romio_str)
+                    lustre = get_lustre_config(count)
+                    lustre_str = '_'.join(map(str, lustre))
+                    gkfs = get_gkfs_config(count)
+                    gkfs_str = '_'.join(map(str, gkfs))
+                    command = r"yhrun -p thcp3 -w %s -N %s -n %s ~/wx/mpiior -a mpiio -r -z -F -t %s -b %s -o %s" % (nodes_list,str(nodes[N]),str(nproc[n]),xfersize[i], blocksize[j], dir_+"testFile")
+                    os.environ["DARSHAN_LOGFILE"] = os.environ["DARSHAN_LOGPATH"] + "/N-%s_n-%s_m_r_z_F_t-%s_b-%s_%s_%s_%s.darshan" % (str(nodes[N]),str(nproc[n]),xfersize[i], blocksize[j], romio_str,lustre_str,gkfs_str)
                     print(command)
-                    runcmd(command, fs_type, dir_, romio, count)
+                    if xfersize[i] != blocksize[j]:
+                        runcmd(command, fs_type, dir_, romio, count, nodes_list)
                     count+=1
-
 
                     # fsync per posix_open
                     romio = get_romio_config(count)
                     romio_str = '_'.join(map(str, romio))
-                    command = r"mpirun -n 8 ~/wx/mpiior -a mpiio -e -t %s -b %s -o %s" % (xfersize[i], blocksize[j], dir_+"testFile")
-                    os.environ["DARSHAN_LOGFILE"] = os.environ["DARSHAN_LOGPATH"] + "/N-1_n-8_m_e_wr_t-%s_b-%s_%s.darshan" % (
-                    xfersize[i], blocksize[j], romio_str)
+                    lustre = get_lustre_config(count)
+                    lustre_str = '_'.join(map(str, lustre))
+                    gkfs = get_gkfs_config(count)
+                    gkfs_str = '_'.join(map(str, gkfs))
+                    command = r"yhrun -p thcp3 -w %s -N %s -n %s ~/wx/mpiior -a mpiio -e -t %s -b %s -o %s" % (nodes_list,str(nodes[N]),str(nproc[n]),xfersize[i], blocksize[j], dir_+"testFile")
+                    os.environ["DARSHAN_LOGFILE"] = os.environ["DARSHAN_LOGPATH"] + "/N-%s_n-%s_m_wr_e_t-%s_b-%s_%s_%s_%s.darshan" % (str(nodes[N]),str(nproc[n]),xfersize[i], blocksize[j], romio_str,lustre_str,gkfs_str)
                     print(command)
-                    runcmd(command, fs_type, dir_, romio, count)
+                    runcmd(command, fs_type, dir_, romio, count, nodes_list)
                     count+=1
 
                     romio = get_romio_config(count)
                     romio_str = '_'.join(map(str, romio))
-                    command = r"mpirun -n 8 ~/wx/mpiior -a mpiio -e -w -t %s -b %s -o %s" % (xfersize[i], blocksize[j], dir_+"testFile")
-                    os.environ["DARSHAN_LOGFILE"] = os.environ["DARSHAN_LOGPATH"] + "/N-1_n-8_m_e_w_t-%s_b-%s_%s.darshan" % (
-                    xfersize[i], blocksize[j], romio_str)
+                    lustre = get_lustre_config(count)
+                    lustre_str = '_'.join(map(str, lustre))
+                    gkfs = get_gkfs_config(count)
+                    gkfs_str = '_'.join(map(str, gkfs))
+                    command = r"yhrun -p thcp3 -w %s -N %s -n %s ~/wx/mpiior -a mpiio -w -e -t %s -b %s -o %s -k" % (nodes_list,str(nodes[N]),str(nproc[n]),xfersize[i], blocksize[j], dir_+"testFile")
+                    os.environ["DARSHAN_LOGFILE"] = os.environ["DARSHAN_LOGPATH"] + "/N-%s_n-%s_m_w_e_t-%s_b-%s_%s_%s_%s.darshan" % (str(nodes[N]),str(nproc[n]),xfersize[i], blocksize[j], romio_str,lustre_str,gkfs_str)
                     print(command)
-                    runcmd(command, fs_type, dir_, romio, count)
+                    runcmd(command, fs_type, dir_, romio, count, nodes_list)
                     count+=1
 
                     # fsync per posix_open random
                     romio = get_romio_config(count)
                     romio_str = '_'.join(map(str, romio))
-                    command = r"mpirun -n 8 ~/wx/mpiior -a mpiio -e -z -t %s -b %s -o %s" % (xfersize[i], blocksize[j], dir_+"testFile")
-                    os.environ["DARSHAN_LOGFILE"] = os.environ["DARSHAN_LOGPATH"] + "/N-1_n-8_m_e_z_wr_t-%s_b-%s_%s.darshan" % (
-                    xfersize[i], blocksize[j], romio_str)
+                    lustre = get_lustre_config(count)
+                    lustre_str = '_'.join(map(str, lustre))
+                    gkfs = get_gkfs_config(count)
+                    gkfs_str = '_'.join(map(str, gkfs))
+                    command = r"yhrun -p thcp3 -w %s -N %s -n %s ~/wx/mpiior -a mpiio -z -e -t %s -b %s -o %s" % (nodes_list,str(nodes[N]),str(nproc[n]),xfersize[i], blocksize[j], dir_+"testFile")
+                    os.environ["DARSHAN_LOGFILE"] = os.environ["DARSHAN_LOGPATH"] + "/N-%s_n-%s_m_wr_z_e_t-%s_b-%s_%s_%s_%s.darshan" % (str(nodes[N]),str(nproc[n]),xfersize[i], blocksize[j], romio_str,lustre_str,gkfs_str)
                     print(command)
-                    runcmd(command, fs_type, dir_, romio, count)
+                    if xfersize[i] != blocksize[j]:
+                        runcmd(command, fs_type, dir_, romio, count, nodes_list)
                     count+=1
 
                     romio = get_romio_config(count)
                     romio_str = '_'.join(map(str, romio))
-                    command = r"mpirun -n 8 ~/wx/mpiior -a mpiio -e -w -z -t %s -b %s -o %s" % (xfersize[i], blocksize[j], dir_+"testFile")
-                    os.environ["DARSHAN_LOGFILE"] = os.environ["DARSHAN_LOGPATH"] + "/N-1_n-8_m_e_z_w_t-%s_b-%s_%s.darshan" % (
-                    xfersize[i], blocksize[j], romio_str)
+                    lustre = get_lustre_config(count)
+                    lustre_str = '_'.join(map(str, lustre))
+                    gkfs = get_gkfs_config(count)
+                    gkfs_str = '_'.join(map(str, gkfs))
+                    command = r"yhrun -p thcp3 -w %s -N %s -n %s ~/wx/mpiior -a mpiio -w -z -e -t %s -b %s -o %s -k" % (nodes_list,str(nodes[N]),str(nproc[n]),xfersize[i], blocksize[j], dir_+"testFile")
+                    os.environ["DARSHAN_LOGFILE"] = os.environ["DARSHAN_LOGPATH"] + "/N-%s_n-%s_m_w_z_e_t-%s_b-%s_%s_%s_%s.darshan" % (str(nodes[N]),str(nproc[n]),xfersize[i], blocksize[j], romio_str,lustre_str,gkfs_str)
                     print(command)
-                    runcmd(command, fs_type, dir_, romio, count)
+                    if xfersize[i] != blocksize[j]:
+                        runcmd(command, fs_type, dir_, romio, count, nodes_list)
                     count+=1
 
                     # fsync per posix_open share
                     romio = get_romio_config(count)
                     romio_str = '_'.join(map(str, romio))
-                    command = r"mpirun -n 8 ~/wx/mpiior -a mpiio -e -F -t %s -b %s -o %s" % (xfersize[i], blocksize[j], dir_+"testFile")
-                    os.environ["DARSHAN_LOGFILE"] = os.environ["DARSHAN_LOGPATH"] + "/N-1_n-8_m_e_F_wr_t-%s_b-%s_%s.darshan" % (
-                    xfersize[i], blocksize[j], romio_str)
+                    lustre = get_lustre_config(count)
+                    lustre_str = '_'.join(map(str, lustre))
+                    gkfs = get_gkfs_config(count)
+                    gkfs_str = '_'.join(map(str, gkfs))
+                    command = r"yhrun -p thcp3 -w %s -N %s -n %s ~/wx/mpiior -a mpiio -e -F -t %s -b %s -o %s" % (nodes_list,str(nodes[N]),str(nproc[n]),xfersize[i], blocksize[j], dir_+"testFile")
+                    os.environ["DARSHAN_LOGFILE"] = os.environ["DARSHAN_LOGPATH"] + "/N-%s_n-%s_m_wr_e_F_t-%s_b-%s_%s_%s_%s.darshan" % (str(nodes[N]),str(nproc[n]),xfersize[i], blocksize[j], romio_str,lustre_str,gkfs_str)
                     print(command)
-                    runcmd(command, fs_type, dir_, romio, count)
+                    runcmd(command, fs_type, dir_, romio, count, nodes_list)
                     count+=1
 
                     romio = get_romio_config(count)
                     romio_str = '_'.join(map(str, romio))
-                    command = r"mpirun -n 8 ~/wx/mpiior -a mpiio -e -w -F -t %s -b %s -o %s" % (xfersize[i], blocksize[j], dir_+"testFile")
-                    os.environ["DARSHAN_LOGFILE"] = os.environ["DARSHAN_LOGPATH"] + "/N-1_n-8_m_e_F_w_t-%s_b-%s_%s.darshan" % (
-                    xfersize[i], blocksize[j], romio_str)
+                    lustre = get_lustre_config(count)
+                    lustre_str = '_'.join(map(str, lustre))
+                    gkfs = get_gkfs_config(count)
+                    gkfs_str = '_'.join(map(str, gkfs))
+                    command = r"yhrun -p thcp3 -w %s -N %s -n %s ~/wx/mpiior -a mpiio -w -e -F -t %s -b %s -o %s -k" % (nodes_list,str(nodes[N]),str(nproc[n]),xfersize[i], blocksize[j], dir_+"testFile")
+                    os.environ["DARSHAN_LOGFILE"] = os.environ["DARSHAN_LOGPATH"] + "/N-%s_n-%s_m_w_e_F_t-%s_b-%s_%s_%s_%s.darshan" % (str(nodes[N]),str(nproc[n]),xfersize[i], blocksize[j], romio_str,lustre_str,gkfs_str)
                     print(command)
-                    runcmd(command, fs_type, dir_, romio, count)
+                    runcmd(command, fs_type, dir_, romio, count, nodes_list)
                     count+=1
 
                     # fsync per posix_open share random
                     romio = get_romio_config(count)
                     romio_str = '_'.join(map(str, romio))
-                    command = r"mpirun -n 8 ~/wx/mpiior -a mpiio -e -z -F -t %s -b %s -o %s" % (xfersize[i], blocksize[j], dir_+"testFile")
-                    os.environ["DARSHAN_LOGFILE"] = os.environ["DARSHAN_LOGPATH"] + "/N-1_n-8_m_e_z_F_wr_t-%s_b-%s_%s.darshan" % (
-                    xfersize[i], blocksize[j], romio_str)
+                    lustre = get_lustre_config(count)
+                    lustre_str = '_'.join(map(str, lustre))
+                    gkfs = get_gkfs_config(count)
+                    gkfs_str = '_'.join(map(str, gkfs))
+                    command = r"yhrun -p thcp3 -w %s -N %s -n %s ~/wx/mpiior -a mpiio -e -F -z -t %s -b %s -o %s" % (nodes_list,str(nodes[N]),str(nproc[n]),xfersize[i], blocksize[j], dir_+"testFile")
+                    os.environ["DARSHAN_LOGFILE"] = os.environ["DARSHAN_LOGPATH"] + "/N-%s_n-%s_m_wr_e_F_z_t-%s_b-%s_%s_%s_%s.darshan" % (str(nodes[N]),str(nproc[n]),xfersize[i], blocksize[j], romio_str,lustre_str,gkfs_str)
                     print(command)
-                    runcmd(command, fs_type, dir_, romio, count)
+                    if xfersize[i] != blocksize[j]:
+                        runcmd(command, fs_type, dir_, romio, count, nodes_list)
                     count+=1
 
                     romio = get_romio_config(count)
                     romio_str = '_'.join(map(str, romio))
-                    command = r"mpirun -n 8 ~/wx/mpiior -a mpiio -e -z -w -F -t %s -b %s -o %s" % (xfersize[i], blocksize[j], dir_+"testFile")
-                    os.environ["DARSHAN_LOGFILE"] = os.environ["DARSHAN_LOGPATH"] + "/N-1_n-8_m_e_z_F_w_t-%s_b-%s_%s.darshan" % (
-                    xfersize[i], blocksize[j], romio_str)
+                    lustre = get_lustre_config(count)
+                    lustre_str = '_'.join(map(str, lustre))
+                    gkfs = get_gkfs_config(count)
+                    gkfs_str = '_'.join(map(str, gkfs))
+                    command = r"yhrun -p thcp3 -w %s -N %s -n %s ~/wx/mpiior -a mpiio -w -e -F -z -t %s -b %s -o %s -k" % (nodes_list,str(nodes[N]),str(nproc[n]),xfersize[i], blocksize[j], dir_+"testFile")
+                    os.environ["DARSHAN_LOGFILE"] = os.environ["DARSHAN_LOGPATH"] + "/N-%s_n-%s_m_w_e_F_z_t-%s_b-%s_%s_%s_%s.darshan" % (str(nodes[N]),str(nproc[n]),xfersize[i], blocksize[j], romio_str,lustre_str,gkfs_str)
                     print(command)
-                    runcmd(command, fs_type, dir_, romio, count)
+                    if xfersize[i] != blocksize[j]:
+                        runcmd(command, fs_type, dir_, romio, count, nodes_list)
                     count+=1
 
 
                     # share
                     romio = get_romio_config(count)
                     romio_str = '_'.join(map(str, romio))
-                    command = r"mpirun -n 8 ~/wx/mpiior -a mpiio -F -t %s -b %s -o %s" % (xfersize[i], blocksize[j], dir_+"testFile")
-                    os.environ["DARSHAN_LOGFILE"] = os.environ["DARSHAN_LOGPATH"] + "/N-1_n-8_m_F_wr_t-%s_b-%s_%s.darshan" % (
-                    xfersize[i], blocksize[j], romio_str)
+                    lustre = get_lustre_config(count)
+                    lustre_str = '_'.join(map(str, lustre))
+                    gkfs = get_gkfs_config(count)
+                    gkfs_str = '_'.join(map(str, gkfs))
+                    command = r"yhrun -p thcp3 -w %s -N %s -n %s ~/wx/mpiior -a mpiio -F -t %s -b %s -o %s" % (nodes_list,str(nodes[N]),str(nproc[n]),xfersize[i], blocksize[j], dir_+"testFile")
+                    os.environ["DARSHAN_LOGFILE"] = os.environ["DARSHAN_LOGPATH"] + "/N-%s_n-%s_m_wr_F_t-%s_b-%s_%s_%s_%s.darshan" % (str(nodes[N]),str(nproc[n]),xfersize[i], blocksize[j], romio_str,lustre_str,gkfs_str)
                     print(command)
-                    runcmd(command, fs_type, dir_, romio, count)
+                    runcmd(command, fs_type, dir_, romio, count, nodes_list)
                     count+=1
 
                     romio = get_romio_config(count)
                     romio_str = '_'.join(map(str, romio))
-                    command = r"mpirun -n 8 ~/wx/mpiior -a mpiio -F -w -t %s -b %s -o %s -k" % (xfersize[i], blocksize[j], dir_+"testFile")
-                    os.environ["DARSHAN_LOGFILE"] = os.environ["DARSHAN_LOGPATH"] + "/N-1_n-8_m_F_w_t-%s_b-%s_%s.darshan" % (
-                    xfersize[i], blocksize[j], romio_str)
+                    lustre = get_lustre_config(count)
+                    lustre_str = '_'.join(map(str, lustre))
+                    gkfs = get_gkfs_config(count)
+                    gkfs_str = '_'.join(map(str, gkfs))
+                    command = r"yhrun -p thcp3 -w %s -N %s -n %s ~/wx/mpiior -a mpiio -w -F -t %s -b %s -o %s -k" % (nodes_list,str(nodes[N]),str(nproc[n]),xfersize[i], blocksize[j], dir_+"testFile")
+                    os.environ["DARSHAN_LOGFILE"] = os.environ["DARSHAN_LOGPATH"] + "/N-%s_n-%s_m_w_F_t-%s_b-%s_%s_%s_%s.darshan" % (str(nodes[N]),str(nproc[n]),xfersize[i], blocksize[j], romio_str,lustre_str,gkfs_str)
                     print(command)
-                    runcmd(command, fs_type, dir_, romio, count)
+                    runcmd(command, fs_type, dir_, romio, count, nodes_list)
                     count+=1
 
                     romio = get_romio_config(count)
                     romio_str = '_'.join(map(str, romio))
-                    command = r"mpirun -n 8 ~/wx/mpiior -a mpiio -F -r -t %s -b %s -o %s" % (xfersize[i], blocksize[j], dir_+"testFile")
-                    os.environ["DARSHAN_LOGFILE"] = os.environ["DARSHAN_LOGPATH"] + "/N-1_n-8_m_F_r_t-%s_b-%s_%s.darshan" % (
-                    xfersize[i], blocksize[j], romio_str)
+                    lustre = get_lustre_config(count)
+                    lustre_str = '_'.join(map(str, lustre))
+                    gkfs = get_gkfs_config(count)
+                    gkfs_str = '_'.join(map(str, gkfs))
+                    command = r"yhrun -p thcp3 -w %s -N %s -n %s ~/wx/mpiior -a mpiio -r -F -t %s -b %s -o %s" % (nodes_list,str(nodes[N]),str(nproc[n]),xfersize[i], blocksize[j], dir_+"testFile")
+                    os.environ["DARSHAN_LOGFILE"] = os.environ["DARSHAN_LOGPATH"] + "/N-%s_n-%s_m_r_F_t-%s_b-%s_%s_%s_%s.darshan" % (str(nodes[N]),str(nproc[n]),xfersize[i], blocksize[j], romio_str,lustre_str,gkfs_str)
                     print(command)
-                    runcmd(command, fs_type, dir_, romio, count)
+                    runcmd(command, fs_type, dir_, romio, count, nodes_list)
                     count+=1
 
+        scancel(jobid)
     print(count)
 
 
 
-def runcmd(command, fs_type, dir_, romio, count):
+def runcmd(command, fs_type, dir_, romio, count, nodes_list=1):
     if fs_type == "Lustre":
         set_lustre_stripe(dir_, count)
     elif fs_type == "GekkoFS":
+        #set_gkfs_parameter(count, nodes_list)
         pass
-        #set_gkfs_parameter(count,N)
     else:
         pass
     set_romio(romio)
@@ -377,24 +479,24 @@ def set_lustre_stripe(path, count):
     subprocess.run(command, shell=True, capture_output=True, text=True)
 
 
-def set_gkfs_parameter(count):
+def set_gkfs_parameter(count, nodes_list):
     config = configparser.ConfigParser()
     config.read("config/storage.ini")
     config_hpp_path = config.get('gekkofs_path','gekkofs_home') + config.get('gekkofs_path','gekkofs_config')
-    with open(config_hpp_path, 'r') as file:
-        lines = file.readlines()
-
-    lines[97] = f'constexpr auto chunksize = {gkfs_chunksize[count] * 1024 * 1024}; // in bytes\n'
-    lines[99] = f'constexpr auto dirents_buff_size = ({gkfs_dirents_buff_size[count]} * 1024 * 1024); // {gkfs_dirents_buff_size[count]} mega\n'
-    lines[105] = f'constexpr auto daemon_io_xstreams = {gkfs_daemon_io_xstreams[count]};\n'
-    lines[107] = f'constexpr auto daemon_handler_xstreams = {gkfs_daemon_handler_xstreams[count]};\n'
-
-    with open(config_hpp_path, 'w') as file:
-        file.writelines(lines)
-
     if count == 0 or count in gkfs_different_indices:
+        with open(config_hpp_path, 'r') as file:
+            lines = file.readlines()
+
+        lines[97] = f'constexpr auto chunksize = {gkfs_chunksize[count] * 1024 * 1024}; // in bytes\n'
+        lines[99] = f'constexpr auto dirents_buff_size = ({gkfs_dirents_buff_size[count]} * 1024 * 1024); // {gkfs_dirents_buff_size[count]} mega\n'
+        lines[105] = f'constexpr auto daemon_io_xstreams = {gkfs_daemon_io_xstreams[count]};\n'
+        lines[107] = f'constexpr auto daemon_handler_xstreams = {gkfs_daemon_handler_xstreams[count]};\n'
+
+        with open(config_hpp_path, 'w') as file:
+            file.writelines(lines)
+
         make_install(config.get('gekkofs_path','gekkofs_home'))
-        run_gkfs(config.get('gekkofs_path','gekkofs_home'), get_node_list())
+        run_gkfs(config.get('gekkofs_path','gekkofs_home'), nodes_list)
 
 
 

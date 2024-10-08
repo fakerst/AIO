@@ -1,37 +1,3 @@
-features1811 = ['POSIX', 'MPIIO',
-                'NPROCS',
-                'POSIX_WRITE_PER_OPEN',
-                'POSIX_READ_PER_OPEN',
-                'POSIX_FSYNC_PER_WRITE',
-                'POSIX_SEQ_READS', 'POSIX_SEQ_WRITES',
-                'POSIX_CONSEC_READS', 'POSIX_CONSEC_WRITES',
-                'POSIX_ACCESS1_ACCESS', 'POSIX_ACCESS1_COUNT',
-                'POSIX_BYTES_READ', 'POSIX_BYTES_WRITTEN',
-                'MPIIO_COLL_READS', 'MPIIO_COLL_WRITES',
-
-                'POSIX_SIZE_READ_0_100',
-                'POSIX_SIZE_READ_100_1K', 'POSIX_SIZE_READ_1K_10K', 'POSIX_SIZE_READ_10K_100K',
-                'POSIX_SIZE_READ_100K_1M', 'POSIX_SIZE_READ_1M_4M', 'POSIX_SIZE_READ_4M_10M',
-                'POSIX_SIZE_READ_10M_100M', 'POSIX_SIZE_READ_100M_1G', 'POSIX_SIZE_READ_1G_PLUS',
-
-                'POSIX_SIZE_WRITE_0_100',
-                'POSIX_SIZE_WRITE_100_1K',
-                'POSIX_SIZE_WRITE_1K_10K', 'POSIX_SIZE_WRITE_10K_100K',
-                'POSIX_SIZE_WRITE_100K_1M', 'POSIX_SIZE_WRITE_1M_4M', 'POSIX_SIZE_WRITE_4M_10M',
-                'POSIX_SIZE_WRITE_10M_100M', 'POSIX_SIZE_WRITE_100M_1G', 'POSIX_SIZE_WRITE_1G_PLUS'
-                ]
-
-features18 = ['POSIX', 'MPIIO',
-              'NPROCS', 'File_Per_Proc',
-              'POSIX_WRITE_PER_OPEN',
-              'POSIX_READ_PER_OPEN',
-              'POSIX_FSYNC_PER_WRITE',
-              'POSIX_SEQ_READS', 'POSIX_SEQ_WRITES',
-              'POSIX_CONSEC_READS', 'POSIX_CONSEC_WRITES',
-              'POSIX_ACCESS1_ACCESS', 'POSIX_ACCESS1_COUNT',
-              'POSIX_BYTES_READ', 'POSIX_BYTES_WRITTEN',
-              'MPIIO_COLL_READS', 'MPIIO_COLL_WRITES']
-
 features18_ = ['POSIX', 'MPIIO',
                'NPROCS_LOG10', 'File_Per_Proc',
                'POSIX_WRITE_PER_OPEN_LOG10',
@@ -42,46 +8,6 @@ features18_ = ['POSIX', 'MPIIO',
                'POSIX_ACCESS1_ACCESS_LOG10', 'POSIX_ACCESS1_COUNT_LOG10',
                'POSIX_BYTES_READ_LOG10', 'POSIX_BYTES_WRITTEN_LOG10',
                'MPIIO_COLL_READS_LOG10', 'MPIIO_COLL_WRITES_LOG10']
-
-features185 = [
-               'POSIX', 'MPIIO',
-               'NPROCS_LOG10', 'File_Per_Proc',
-               'POSIX_ACCESS1_ACCESS_LOG10',
-               'POSIX_ACCESS1_COUNT_LOG10',
-
-               'POSIX_WRITE_PER_OPEN_LOG10',
-               'POSIX_FSYNC_PER_WRITE_LOG10',
-
-               'POSIX_SEQ_WRITES_LOG10',
-               'POSIX_CONSEC_WRITES_LOG10',
-               #'POSIX_BYTES_WRITTEN_LOG10',
-               'MPIIO_COLL_WRITES_LOG10',
-
-               'POSIX_READ_PER_OPEN_LOG10', 'POSIX_SEQ_READS_LOG10',
-               'POSIX_CONSEC_READS_LOG10', #'POSIX_BYTES_READ_LOG10',
-               'MPIIO_COLL_READS_LOG10',
-               ]
-columns = [
-    'POSIX', 'MPIIO', 'HDF5', #'NPROCS',
-    'File_Per_Proc',
-    'POSIX_FSYNCS',
-    'POSIX_OPENS',
-    'POSIX_READS',
-    'POSIX_WRITES',
-    'POSIX_SEQ_READS',
-    'POSIX_SEQ_WRITES',
-    'POSIX_CONSEC_READS',
-    'POSIX_CONSEC_WRITES',
-    'POSIX_BYTES_READ',
-    'POSIX_BYTES_WRITTEN',
-
-    'POSIX_ACCESS1_ACCESS',
-    'POSIX_ACCESS1_COUNT',
-    'MPIIO_COLL_READS',
-    'MPIIO_COLL_WRITES',
-    'MPIIO_VIEWS',
-
-    'POSIX_F_READ_TIME', 'POSIX_F_WRITE_TIME', 'POSIX_F_META_TIME']
 
 columnsdir = [
     'POSIX', 'MPIIO', 'HDF5', 'NPROCS',
@@ -124,118 +50,6 @@ columns_dup = [
     'MPIIO_COLL_READS',
     'MPIIO_COLL_WRITES',
     'MPIIO_VIEWS']
-
-features181 = ['POSIX', 'MPIIO',
-               'POSIX_OPENS', 'POSIX_FSYNCS',
-               'NPROCS', 'File_Per_Proc',
-               'POSIX_READS', 'POSIX_WRITES',
-               'POSIX_SEQ_READS', 'POSIX_SEQ_WRITES', 'POSIX_CONSEC_READS',
-               'POSIX_CONSEC_WRITES',
-               'POSIX_ACCESS1_ACCESS', 'POSIX_ACCESS1_COUNT',
-               'POSIX_BYTES_READ', 'POSIX_BYTES_WRITTEN',
-               'MPIIO_COLL_READS', 'MPIIO_COLL_WRITES']
-
-features181_ = ['POSIX', 'MPIIO',
-                'POSIX_OPENS_LOG10', 'POSIX_FSYNCS_LOG10',
-                'NPROCS_LOG10',
-                'POSIX_READS_LOG10', 'POSIX_WRITES_LOG10',
-                'POSIX_SEQ_READS_LOG10', 'POSIX_SEQ_WRITES_LOG10', 'POSIX_CONSEC_READS_LOG10',
-                'POSIX_CONSEC_WRITES_LOG10',
-                'POSIX_ACCESS1_ACCESS_LOG10', 'POSIX_ACCESS1_COUNT_LOG10',
-                'POSIX_BYTES_READ_LOG10', 'POSIX_BYTES_WRITTEN_LOG10',
-                'MPIIO_COLL_READS_LOG10', 'MPIIO_COLL_WRITES_LOG10']
-
-features182 = ['POSIX', 'MPIIO', 'HDF5', 'POSIX_OPENS', 'POSIX_FSYNCS', 'NPROCS', 'POSIX_READS', 'POSIX_WRITES',
-               'POSIX_SEQ_READS', 'POSIX_SEQ_WRITES', 'POSIX_CONSEC_READS',
-               'POSIX_CONSEC_WRITES', 'POSIX_ACCESS1_ACCESS', 'MPIIO_COLL_READS', 'MPIIO_COLL_WRITES', 'MPIIO_VIEWS']
-
-featureo = ['NPROCS',
-
-            'POSIX_OPENS',
-            'POSIX_READS',
-            'POSIX_WRITES',
-
-            'POSIX_FSYNCS',
-
-            'POSIX_BYTES_READ',
-            'POSIX_BYTES_WRITTEN',
-            'POSIX_SEQ_READS',
-            'POSIX_SEQ_WRITES',
-            'POSIX_CONSEC_READS',
-            'POSIX_CONSEC_WRITES',
-
-            'POSIX_SIZE_READ_0_100',
-            'POSIX_SIZE_READ_100_1K', 'POSIX_SIZE_READ_1K_10K', 'POSIX_SIZE_READ_10K_100K',
-            'POSIX_SIZE_READ_100K_1M', 'POSIX_SIZE_READ_1M_4M', 'POSIX_SIZE_READ_4M_10M',
-            'POSIX_SIZE_READ_10M_100M', 'POSIX_SIZE_READ_100M_1G', 'POSIX_SIZE_READ_1G_PLUS',
-
-            'POSIX_SIZE_WRITE_0_100',
-            'POSIX_SIZE_WRITE_100_1K',
-            'POSIX_SIZE_WRITE_1K_10K', 'POSIX_SIZE_WRITE_10K_100K',
-            'POSIX_SIZE_WRITE_100K_1M', 'POSIX_SIZE_WRITE_1M_4M', 'POSIX_SIZE_WRITE_4M_10M',
-            'POSIX_SIZE_WRITE_10M_100M', 'POSIX_SIZE_WRITE_100M_1G', 'POSIX_SIZE_WRITE_1G_PLUS',
-            ]
-
-lbb_feature = [
-    'POSIX_OPENS_LOG10',
-    'POSIX_READS_LOG10',
-    'POSIX_WRITES_LOG10',
-
-    'POSIX_FSYNCS_LOG10',
-
-    'POSIX_TOTAL_BYTES_LOG10',
-    'POSIX_TOTAL_ACCESS_LOG10',
-
-    'POSIX_BYTES_READ_PERC',
-    'POSIX_BYTES_WRITTEN_PERC',
-    'POSIX_SEQ_READS_PERC',
-    'POSIX_SEQ_WRITES_PERC',
-    'POSIX_CONSEC_READS_PERC',
-    'POSIX_CONSEC_WRITES_PERC',
-
-    'POSIX_SIZE_READ_0_100_PERC',
-    'POSIX_SIZE_READ_100_1K_PERC',
-    'POSIX_SIZE_READ_1K_10K_PERC', 'POSIX_SIZE_READ_10K_100K_PERC',
-    'POSIX_SIZE_READ_100K_1M_PERC', 'POSIX_SIZE_READ_1M_4M_PERC', 'POSIX_SIZE_READ_4M_10M_PERC',
-    'POSIX_SIZE_READ_10M_100M_PERC', 'POSIX_SIZE_READ_100M_1G_PERC', 'POSIX_SIZE_READ_1G_PLUS_PERC',
-
-    'POSIX_SIZE_WRITE_0_100_PERC',
-    'POSIX_SIZE_WRITE_100_1K_PERC',
-    'POSIX_SIZE_WRITE_1K_10K_PERC', 'POSIX_SIZE_WRITE_10K_100K_PERC',
-    'POSIX_SIZE_WRITE_100K_1M_PERC', 'POSIX_SIZE_WRITE_1M_4M_PERC', 'POSIX_SIZE_WRITE_4M_10M_PERC',
-    'POSIX_SIZE_WRITE_10M_100M_PERC', 'POSIX_SIZE_WRITE_100M_1G_PERC', 'POSIX_SIZE_WRITE_1G_PLUS_PERC']
-
-feature = ['NPROCS_LOG10',
-
-           'POSIX_OPENS_LOG10',
-           'POSIX_READS_LOG10',
-           'POSIX_WRITES_LOG10',
-
-           'POSIX_FSYNCS_LOG10',
-
-           'POSIX_TOTAL_BYTES_LOG10',
-           'POSIX_TOTAL_ACCESS_LOG10',
-
-           'POSIX_BYTES_READ_PERC',
-           'POSIX_BYTES_WRITTEN_PERC',
-           'POSIX_SEQ_READS_PERC',
-           'POSIX_SEQ_WRITES_PERC',
-           'POSIX_CONSEC_READS_PERC',
-           'POSIX_CONSEC_WRITES_PERC',
-
-           'POSIX_SIZE_READ_0_100_PERC',
-           'POSIX_SIZE_READ_100_1K_PERC',
-           'POSIX_SIZE_READ_1K_10K_PERC', 'POSIX_SIZE_READ_10K_100K_PERC',
-           'POSIX_SIZE_READ_100K_1M_PERC', 'POSIX_SIZE_READ_1M_4M_PERC', 'POSIX_SIZE_READ_4M_10M_PERC',
-           'POSIX_SIZE_READ_10M_100M_PERC', 'POSIX_SIZE_READ_100M_1G_PERC', 'POSIX_SIZE_READ_1G_PLUS_PERC',
-
-           'POSIX_SIZE_WRITE_0_100_PERC',
-           'POSIX_SIZE_WRITE_100_1K_PERC',
-           'POSIX_SIZE_WRITE_1K_10K_PERC', 'POSIX_SIZE_WRITE_10K_100K_PERC',
-           'POSIX_SIZE_WRITE_100K_1M_PERC', 'POSIX_SIZE_WRITE_1M_4M_PERC', 'POSIX_SIZE_WRITE_4M_10M_PERC',
-           'POSIX_SIZE_WRITE_10M_100M_PERC', 'POSIX_SIZE_WRITE_100M_1G_PERC', 'POSIX_SIZE_WRITE_1G_PLUS_PERC']
-
-# 'agg_perf_by_slowest'
 
 log_features = [
     'POSIX_OPENS_LOG10', 'POSIX_SEEKS_LOG10', 'POSIX_STATS_LOG10',
@@ -354,6 +168,12 @@ mpiio_features = [
 
 darshan_features = log_features + perc_features
 
+romio_features = ['cb_read', 'cb_write', 'ds_read', 'ds_write', 'cb_nodes', 'cb_config_list']
+
+lustre_feature = ['stripe_size', 'stripe_count']
+
+gkfs_features = ['gkfs_chunksize', 'gkfs_dirents_buff_size', 'gkfs_daemon_io_xstreams', 'gkfs_daemon_handler_xstreams']
+
 lustre_features = [
     'lustre_dataservers_cpuload_min', 'lustre_dataservers_cpuload_max',
     'lustre_dataservers_cpuload_mean', 'lustre_dataservers_cpuload_std',
@@ -375,3 +195,25 @@ lustre_features = [
     'lustre_mdtargets_setattrs_mean', 'lustre_mdtargets_statfss_mean',
     'lustre_mdtargets_unlinks_mean'
 ]
+
+columns = [
+    'POSIX', 'MPIIO', 'HDF5', #'NPROCS',
+    'File_Per_Proc',
+    'POSIX_FSYNCS',
+    'POSIX_OPENS',
+    'POSIX_READS',
+    'POSIX_WRITES',
+    'POSIX_SEQ_READS',
+    'POSIX_SEQ_WRITES',
+    'POSIX_CONSEC_READS',
+    'POSIX_CONSEC_WRITES',
+    'POSIX_BYTES_READ',
+    'POSIX_BYTES_WRITTEN',
+
+    'POSIX_ACCESS1_ACCESS',
+    'POSIX_ACCESS1_COUNT',
+    'MPIIO_COLL_READS',
+    'MPIIO_COLL_WRITES',
+    'MPIIO_VIEWS',
+
+    'POSIX_F_READ_TIME', 'POSIX_F_WRITE_TIME', 'POSIX_F_META_TIME']
