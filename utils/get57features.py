@@ -470,7 +470,6 @@ def extracting_perc1(path):
     POSIX_ACCESS4_COUNT = []
 
     darshan_files = glob.glob(path)
-    print(darshan_files)
     for file_name in darshan_files:
         with open(file_name) as infile:
             for line in infile:
@@ -716,7 +715,7 @@ def extracting_perc2(path):
     for file_name in darshan_files:
         with open(file_name) as infile:
             for line in infile:
-                if line == '# MPI-IO module data':
+                if line == '# MPI-IO module data\n':
                     break
                 read_0_100_match = ds_read_0_100_pattern.match(line)
                 if read_0_100_match is not None:
@@ -858,8 +857,8 @@ def extracting_throught(path):
     for file_name in darshan_files:
         with open(file_name) as infile:
             for line in infile:
-                if line == '# STDIO module data\n':
-                    break
+                #if line == '# MPI-IO module data\n':
+                #    break
                 agg_perf_by_slowest_match = ds_agg_perf_by_slowest_pattern.match(line)
                 if agg_perf_by_slowest_match is not None:
                     agg_perf_by_slowest_ = float(agg_perf_by_slowest_match.group(2))
@@ -871,7 +870,7 @@ def extracting_throught(path):
                         agg_perf_by_slowest_ = agg_perf_by_slowest_ * 1024 * 1024 * 1024;
 
                     agg_perf_by_slowest.append(agg_perf_by_slowest_)
-                    continue
+                    break
 
 
     mydata = pd.DataFrame(list(
@@ -936,9 +935,9 @@ def extracting_darshan57(path):
     df4 = extracting_throught(path)
     df = pd.concat([df1, df2, df3, df4], axis=1)
     column_names = list(df.columns)
-    # for index, row in df.iterrows():
-    #     for column in df.columns:
-    #         print(column, ":", row[column])
+    for index, row in df.iterrows():
+        for column in df.columns:
+            print(column, ":", row[column])
     df = convert_POSIX_features_to_percentages(df)
     df = log_scale_dataset(df)
 

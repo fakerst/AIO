@@ -1,6 +1,7 @@
 import subprocess
 import joblib
 import time
+import configparser
 from utils.utils_else import *
 from utils.get18filefeatures import *
 from utils.get57features import *
@@ -21,7 +22,7 @@ class AIO:
         self.df = None
         self.dfs = None
         self.result_layer = None
-        self.tmpfs_path = "/dev/shm/"
+        self.execute_dir = ""
         self.runtime = 0
         self.runtime_AIO = 0
         self.speedup = 0
@@ -37,7 +38,6 @@ class AIO:
             self.run_with_darshan()
         else:
             self.df = get_app_file(self.darshan_anspath + self.cmd_check)
-            print(self.df.index)
             self.dfs = extracting_darshan57(self.darshan_anspath + self.cmd_checkt)
 
     def extract_and_predict(self):
@@ -56,6 +56,12 @@ class AIO:
         print(result_dict)
         self.runtime = (self.df['POSIX_F_READ_TIME'].sum() + self.df['POSIX_F_WRITE_TIME'].sum() + self.df[
             'POSIX_F_META_TIME'].sum()) / self.df['NPROCS'][0]
+        self.execute_dir()
+
+    def extract_dir(self):
+        for path in self.result_layer:
+            directory = os.path.dirname(path)
+            self.execute_dir = directory
 
     def execute(self):
         # for key, value in self.result.items():
@@ -69,7 +75,6 @@ class AIO:
             self.execute_GekkoFS()
         elif all(value == "Lustre" for value in self.result_layer.values()):
             self.execute_Lustre()
-
 
     def result(self):
         if self.runtime_AIO != 0:
@@ -126,14 +131,12 @@ class AIO:
         subprocess.run(' && '.join(commands), shell=True, capture_output=False, text=True)
         self.runtime_AIO = time.time() - start_time
 
-
-
     def execute_Lustre(self):
         print("execute lustre")
         best_configlist = self.search_lustre(self.objective_lustre)
         os.environ["LD_PRELOAD"] = "/thfs3/home/wuhuijun/wx/AIO/tuning/mpiio.so"
         self.set_romio(best_configlist[:6])
-        self.set_lustre_stripe("asdf",best_configlist[:6])
+        self.set_lustre_stripe(self.execute_dir,best_configlist[:6])
         start_time = time.time()
         subprocess.run(self.cmd, shell=True, capture_output=False, text=True)
         self.runtime_AIO = time.time() - start_time
@@ -241,9 +244,32 @@ class AIO:
         print(f"Best fitness is: {best_individual.fitness.values[0]}")
         return best_individual
 
+    def set_GekkoFS_env(self):
+        config = configparser.ConfigParser()
+        config.read("config/storage.ini")
+        os.environ["PKG_CONFIG_PATH"] = config.get('gekkofs_path','gekkofs_home') + config.get('gekkofs_path','deps_path') + config.get('gekkofs_path','pkg_config_path')
+        os.environ["CMAKE_PREFIX_PATH"] = config.get('gekkofs_path','gekkofs_home') + config.get('gekkofs_path','deps_path')
+        os.environ["LD_LIBRARY_PATH"] = config.get('gekkofs_path','gekkofs_home') + config.get('gekkofs_path','deps_path') + "/lib:" + config.get('gekkofs_path','gekkofs_home') + config.get('gekkofs_path','deps_path') + "/lib64:" + "/lib/aarch64-linux-gnu/:" + os.environ["LD_LIBRARY_PATH"]
+        os.environ["UCX_TLS"] = config.get('gekkofs_path','ucx_tls')
+        os.environ["UCX_NET_DEVICES"] = config.get('gekkofs_path','ucx_net_devices')
+        os.environ["LIBGKFS_REGISTRY"] = config.get('gekkofs_path', 'gekkofs_reg')
+
+    def start_daemon(self):
+        cmd = "/thfs3/home/wuhuijun/wx/gekkofs-v0.9.2-th-compile-passed/install/bin/gkfs_daemon -P ucx+all -l 12.32.3.34 -r /dev/shm/gkfs -m /thfs3/home/wuhuijun/wx/AIO2/ &"
+        subprocess.run(cmd, shell=True, capture_output=False, text=True)
+
+    def kill_daemon(self):
+        cmd = "killall -9 gkfs_daemon"
+        subprocess.run(cmd, shell=True, capture_output=False, text=True)
+
     def execute_GekkoFS(self):
         print("execute gekkofs")
-        pass
+        self.set_GekkoFS_env()
+        self.start_daemon()
+        start_time = time.time()
+        subprocess.run(self.cmd, shell=True, capture_output=False, text=True)
+        self.runtime_AIO = time.time() - start_time
+        self.kill_daemon()
 
     def __del__(self):
         # kill_proot()
